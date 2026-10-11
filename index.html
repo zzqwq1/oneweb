@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>霓虹协议 · 调试控制台 — NEON PROTOCOL DEV CONSOLE</title>
+<title>FLUX · 网站控制台 — FLUX WEB CONSOLE</title>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
@@ -68,6 +68,9 @@ body{background:var(--bg);color:var(--ink);font:14px/1.6 var(--f-cn);display:fle
 .nv.act::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--red);box-shadow:0 0 8px rgba(255,70,85,.8)}
 .nv.locked::after{content:'';position:absolute;right:16px;top:13px;width:5px;height:5px;border-radius:50%;
  background:var(--gold);box-shadow:0 0 6px rgba(242,181,68,.8)}
+.nv.off{opacity:.5}
+.nv.off::after{content:'';position:absolute;right:16px;top:13px;width:5px;height:5px;border-radius:50%;
+ background:var(--red);box-shadow:0 0 6px rgba(255,70,85,.8)}
 .nv-foot{margin-top:auto;text-align:center;font:600 9px/1.7 var(--f-num);color:var(--dim2);letter-spacing:2px}
 
 main{flex:1;min-width:0;position:relative}
@@ -113,6 +116,7 @@ input[type=range]{width:150px;accent-color:var(--red);cursor:pointer}
 .chip{width:26px;height:26px;border:2px solid transparent;cursor:pointer;transition:.2s}
 .chip:hover{transform:scale(1.12)}
 .chip.act{border-color:var(--ink);box-shadow:0 0 8px rgba(255,255,255,.25)}
+.grp-title{font:600 11px var(--f-en);letter-spacing:3px;color:var(--dim2);padding:14px 2px 4px}
 
 /* ---------- 视口 ---------- */
 .lab{display:grid;grid-template-columns:1fr 300px;gap:22px}
@@ -221,7 +225,7 @@ canvas.viewport{display:block;width:100%}
 @media (max-width:900px){
  .sidenav{width:54px}.nv span{display:none}.nv-foot{display:none}
  .tb-title{display:none}.lab,.auth-grid{grid-template-columns:1fr}
- .nv.locked::after{right:10px}
+ .nv.locked::after,.nv.off::after{right:10px}
 }
 </style>
 </head>
@@ -231,10 +235,10 @@ canvas.viewport{display:block;width:100%}
 
 <header class="topbar">
   <div class="brand">
-    <div class="logo"><b>N</b></div>
-    <div class="brand-t"><b>NEON PROTOCOL</b><span>DEV · v0.9.5</span></div>
+    <div class="logo"><b>F</b></div>
+    <div class="brand-t"><b>FLUX</b><span>DEV · v0.9.6</span></div>
   </div>
-  <div class="tb-title">FLUX · 网页控制台<i>NEON PROTOCOL · DEV CONSOLE</i></div>
+  <div class="tb-title">FLUX · 网站控制台 · IOS适配<i>FLUX · WEB CONSOLE</i></div>
   <div class="tb-right">
     <div class="uptime"><span class="dot" id="uptimeDot"></span><span id="uptimeLabel">稳定运行</span> <b id="uptime">待激活</b></div>
     <button class="btn-ghost" id="csBtn">
@@ -251,11 +255,11 @@ canvas.viewport{display:block;width:100%}
       <span>移动调试</span></button>
     <button class="nv" data-p="eco">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10h5M9.5 14h5"/></svg>
-      <span>资源调试</span></button>
+      <span>功能调试</span></button>
     <button class="nv" data-p="vision">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
-      <span>视觉调试</span></button>
-    <button class="nv" data-p="perf">
+      <span>绘制透视</span></button>
+    <button class="nv off" data-p="perf">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/><path d="M2.5 18h19"/></svg>
       <span>性能调试</span></button>
     <button class="nv" data-p="auth">
@@ -267,28 +271,27 @@ canvas.viewport{display:block;width:100%}
   <main>
     <!-- 移动调试 -->
     <section class="panel act" id="p-move">
-      <div class="p-head"><h2>移动调试<span>MOVEMENT DEBUG</span></h2><p>角色机动参数调试视口：跳跃、穿墙与冲刺效果实时演示，参数仅在开发构建中生效。</p></div>
+      <div class="p-head"><h2>移动调试<span>MOVEMENT DEBUG</span></h2><p></p></div>
       <div class="lab">
         <div>
           <div class="viewport-wrap">
             <canvas class="viewport" id="vcMove" width="640" height="150"></canvas>
             <div class="vp-bar"><span>SANDBOX_01 · CHARACTER</span><span id="mvParam">GRAV 1.00 · SPD 1.00</span></div>
           </div>
-          <p class="stage-tip">演示角色自动循环跳跃与往返移动，用于验证调试参数的手感表现。</p>
+          <p class="stage-tip"></p>
         </div>
         <div class="sens-box">
           <div class="row"><label>人物高跳<span class="sub">跳跃高度提升约 3 倍</span></label><button class="sw" id="swHigh"></button></div>
           <div class="row"><label>幽灵模式<span class="sub">穿越墙体与障碍 · 免疫碰撞</span></label><button class="sw" id="swGhost"></button></div>
-          <div class="row"><label>静步加速<span class="sub">静步保持原本速度但是对手无法听见</span></label><button class="sw" id="swDash"></button></div>
           <div class="row"><label>重力倍率</label><input type="range" id="rgGrav" min="10" max="300" value="100"><b class="val" id="vGrav">1.00</b></div>
           <div class="row"><label>移动速度倍率</label><input type="range" id="rgSpd" min="50" max="300" value="100"><b class="val" id="vSpd">1.00</b></div>
         </div>
       </div>
     </section>
 
-    <!-- 资源调试 -->
+    <!-- 功能调试 -->
     <section class="panel" id="p-eco">
-      <div class="p-head"><h2>功能调试<span>ECONOMY DEBUG</span></h2><p>经济系统与资源参数写入，用于测试商店、弹道与成长曲线。</p></div>
+      <div class="p-head"><h2>功能调试<span>FUNCTION DEBUG</span></h2><p>战斗功能参数写入，用于测试弹道、回复与瞄准手感。自瞄相关效果可在「绘制透视」视口实时预览。</p></div>
       <div class="sens-box" style="max-width:560px">
         <div class="money-row">
           <label style="font-size:13px;min-width:70px">金钱设置</label>
@@ -296,19 +299,28 @@ canvas.viewport{display:block;width:100%}
           <button class="btn-line" id="moneyBtn">写入参数</button>
         </div>
         <div class="row"><label>无限子弹<span class="sub">弹匣计数锁定，不触发换弹</span></label><button class="sw" id="swAmmo"></button></div>
-        <div class="row"><label>回血增加<span class="sub">强制添加奶妈回血buff</span></label><button class="sw" id="swArmor"></button></div>
-        <div class="row"><label>子弹追踪<span class="sub">子弹追踪，开了秒拉10</span></label><button class="sw" id="swOneShot"></button></div>
-        <div class="row"><label>技能无冷却<span class="sub">技能CD归零，类似自定义无限技能</span></label><button class="sw" id="swNoCD"></button></div>
+        <div class="row"><label>子弹追踪<span class="sub">子弹追踪，开了秒拉10</span></label><button class="sw" id="swBTrack"></button></div>
+        <div class="row"><label>回血buff<span class="sub">强行添加奶妈回血效果</span></label><button class="sw" id="swHeal"></button></div>
+        <div class="row"><label>范围子弹<span class="sub">命中产生范围溅射伤害</span></label><button class="sw" id="swAoe"></button></div>
+        <div class="row"><label>无限技能冷却<span class="sub">技能CD归零，便于连招测试</span></label><button class="sw" id="swNoCD"></button></div>
+        <div class="grp-title">AIMBOT · 自瞄参数</div>
+        <div class="row"><label>自瞄<span class="sub">自动锁定敌人 · 视口内可见吸附效果</span></label><button class="sw" id="swAim"></button></div>
+        <div class="row"><label>压枪速度<span class="sub">后座回拉速度 · 10 = 秒拉</span></label><input type="range" id="rgRecoil" min="1" max="10" value="5"><b class="val" id="vRecoil">5</b></div>
+        <div class="row"><label>瞄准速度<span class="sub">准星吸附目标的快慢</span></label><input type="range" id="rgAimSpd" min="1" max="20" value="10"><b class="val" id="vAimSpd">10</b></div>
+        <div class="row"><label>瞄准部位<span class="sub">锁定头部 / 身体 / 随机切换</span></label>
+          <div class="seg" id="segPart">
+            <button data-part="head" class="act">头部</button><button data-part="body">身体</button><button data-part="random">随机</button>
+          </div></div>
       </div>
-      <p class="note">以上参数只作用于本地调试构建，写入后立即生效并伴随系统提示，方便对照数值策划案验证。</p>
+      <p class="note">外挂是工具，作弊是手段，演戏是智慧</p>
     </section>
 
-    <!-- 视觉调试 -->
+    <!-- 绘制透视 -->
     <section class="panel" id="p-vision">
-      <div class="p-head"><h2>绘制调试<span>VISUAL DEBUG</span></h2><p>敌人轮廓透视与调试绘制（Debug Draw）预览：墙后单位、方框标注、子弹轨迹与碰撞盒。</p></div>
+      <div class="p-head"><h2>绘制透视<span>DRAW &amp; ESP</span></h2><p>透视与调试绘制（Debug Draw）预览：墙后单位、方框标注、子弹轨迹，以及自瞄吸附效果的实时演示。</p></div>
       <div class="viewport-wrap" style="max-width:680px">
         <canvas class="viewport" id="vcVis" width="640" height="320"></canvas>
-        <div class="vp-bar"><span>RANGE_01 · ENTITY VIEW</span><span>CAP <b id="vpCap">120</b> FPS</span></div>
+        <div class="vp-bar"><span>RANGE_01 · ENTITY VIEW</span><span>FPS <b id="vpFps">--</b></span></div>
       </div>
       <div class="sens-box" style="max-width:680px;margin-top:16px">
         <div class="chips" id="chipEsp">
@@ -323,22 +335,6 @@ canvas.viewport{display:block;width:100%}
         <div class="row"><label>绘制透明度</label><input type="range" id="rgEspA" min="30" max="100" value="90"><b class="val" id="vEspA">90%</b></div>
         <div class="row"><label>线条宽度</label><input type="range" id="rgEspW" min="1" max="3" value="1"><b class="val" id="vEspW">1</b></div>
       </div>
-    </section>
-
-    <!-- 性能调试 -->
-    <section class="panel" id="p-perf">
-      <div class="p-head"><h2>性能调试<span>PERFORMANCE</span></h2><p>帧率策略、调试 HUD 与时间缩放，定位性能瓶颈与验证游戏节奏。</p></div>
-      <div class="sens-box" style="max-width:560px">
-        <div class="row"><label>强改设备???</label>
-          <div class="seg" id="segFps">
-            <button data-f="60">60</button><button data-f="90">90</button><button data-f="120" class="act">120</button><button data-f="144">144</button><button data-f="240">240</button>
-          </div></div>
-        <div class="row"><label>调试 HUD<span class="sub">在视口左上角叠加运行数据</span></label><button class="sw" id="swHud"></button></div>
-        <div class="row"><label>碰撞盒显示<span class="sub">绘制所有实体的碰撞体积</span></label><button class="sw" id="swHit"></button></div>
-        <div class="row"><label>导航网格显示<span class="sub">可视化 AI 寻路网格</span></label><button class="sw" id="swNav"></button></div>
-        <div class="row"><label>时间缩放<span class="sub">慢动作 / 快进 · 调试节奏用</span></label><input type="range" id="rgTS" min="25" max="300" value="100"><b class="val" id="vTS">1.00x</b></div>
-      </div>
-      <p class="note">帧率上限会同步显示在视口状态栏；开启调试 HUD 后，左上角会实时输出 FPS、实体数与缩放倍率。</p>
     </section>
 
     <!-- 授权管理 -->
@@ -359,7 +355,7 @@ canvas.viewport{display:block;width:100%}
             <input id="codeInput" placeholder="例如：FLUX-1234-5678-ABCD" spellcheck="false">
             <button class="btn-solid" id="actBtn">立即激活</button>
           </div>
-          <p class="hint">· 激活码格式：<b>FLUX-0000-0000-AAAA</b>（两段 4 位数字 + 一段 4 位大写字母），输入不区分大小写。<br>· <b>每个激活码仅限本机使用一次</b>，激活成功后立即绑定。<br>· 没有激活码？在右下角 <b>在线客服</b> 发送「激活码」自助领取 1 天体验码。</p>
+          <p class="hint">· 激活码格式：<b>FLUX-0000-0000-AAAA</b>，末段为校验位，仅发卡工具签发的码可激活。<br>· <b>每个激活码仅限本机使用一次</b>，激活成功后立即绑定。<br>· 没有激活码？在右下角 <b>在线客服</b> 发送「激活码」自助领取 1 天体验码。</p>
         </div>
       </div>
     </section>
@@ -373,7 +369,7 @@ canvas.viewport{display:block;width:100%}
     </div>
     <div class="sb-block">
       <h4>PROJECT</h4>
-      <div class="sess"><span>工程名</span><b>NEON PROTOCOL</b></div>
+      <div class="sess"><span>工程名</span><b>FLUX</b></div>
       <div class="sess"><span>引擎</span><b>Unity 2022.3</b></div>
       <div class="sess"><span>渲染管线</span><b>URP</b></div>
       <div class="sess"><span>当前场景</span><b>RANGE_01</b></div>
@@ -382,11 +378,11 @@ canvas.viewport{display:block;width:100%}
       <h4>SESSION</h4>
       <div class="sess"><span>运行时长</span><b id="uptime2" class="wait">待激活</b></div>
       <div class="sess"><span>已启用模块</span><b id="modCount">0</b></div>
-      <div class="sess"><span>调试项</span><b id="cfgCount">13</b></div>
+      <div class="sess"><span>调试项</span><b id="cfgCount">20</b></div>
     </div>
     <div class="sb-block tips">
       <h4>TIPS</h4>
-      <p>未激活时为预览模式，仅可浏览视口；激活后调试功能解锁并启动稳定运行计时。所有参数仅作用于本地调试构建。</p>
+      <p>未激活时为预览模式，仅可浏览视口；激活后调试功能解锁并启动稳定运行计时。</p>
     </div>
   </aside>
 </div>
@@ -398,7 +394,7 @@ canvas.viewport{display:block;width:100%}
   <span>当前模式 <b id="footMode" class="prev">预览模式</b></span><i>|</i>
   <span>PING <b id="ping">23ms</b></span><i>|</i>
   <span class="ok"><span class="dot"></span>服务正常</span><i>|</i>
-  <span>© 2026 NEON PROTOCOL DEV</span>
+  <span>© 2026 FLUX DEV</span>
 </footer>
 
 <!-- 在线客服浮窗 -->
@@ -452,19 +448,39 @@ window.addEventListener('error',e=>{ if(errShown++<3)toast('脚本错误：'+e.m
 const safe=(label,fn)=>{try{fn()}catch(err){console.error('['+label+']',err);toast(label+' 初始化失败：'+err.message,'err','DEBUG')}};
 
 /* ============ 调试状态（全局共享） ============ */
-const fx={wallhack:false,esp:false,tracers:false,wire:false,hud:false,hitbox:false,nav:false,tscale:1,espColor:'#ff4655',espAlpha:.9,lw:1};
-const mv={high:false,ghost:false,dash:false,grav:1,spd:1};
-let capFps=120;
+const fx={wallhack:false,esp:false,tracers:false,wire:false,btrack:false,heal:false,aoe:false,espColor:'#ff4655',espAlpha:.9,lw:1};
+const mv={high:false,ghost:false,grav:1,spd:1};
+const aim={on:false,speed:10,recoil:5,part:'head'};
 
 /* ================================================================
-   授权数据与状态渲染（★ 全局作用域 —— 修复上一版 renderAuth 闭包隔离
-   导致的「脚本错误：renderAuth is not defined」）
+   激活码签发/校验（FLUX 格式 · 末段校验位 · 全局作用域）
    ================================================================ */
-/* 激活码格式：FLUX-0000-0000-AAAA（两段4位数字 + 一段4位大写字母） */
-const CODE_RE=/^FLUX-\d{4}-\d{4}-[A-Z]{4}$/;
-const SPECIAL_CODES={'FLUX-7392-0481-KQXZ':7,'FLUX-2864-9157-TRBM':30}; // 长时码
-const DEFAULT_DAYS=3; // 任意符合格式的未使用码默认授权天数
+const SPECIAL_CODES={'FLUX-7392-0481-KQXZ':7,'FLUX-2864-9157-TRBM':30}; // 测试白名单
+const ALPHA='ABCDEFGHJKLMNPQRSTUVWXYZ';
+function fluxChecksum(d8){
+  let h=5381;
+  for(const c of 'FLUX')h=(h*33+c.charCodeAt(0))>>>0;      // 盐值 FLUX
+  for(const c of d8)h=(h*33+c.charCodeAt(0))>>>0;
+  let out='';
+  for(let i=0;i<4;i++){h=(Math.imul(h,1103515245)+12345)>>>0;out+=ALPHA[h%24]}
+  return out;
+}
+function checkFlux(code){
+  const m=/^FLUX-(\d{4})-(\d{4})-([A-Z]{4})$/.exec(code);
+  if(!m)return null;
+  const d8=m[1]+m[2];
+  if(fluxChecksum(d8)!==m[3])return null;
+  const days=parseInt(d8.slice(0,2),10);
+  return (days>=1&&days<=99)?days:null;
+}
+function genFlux(days){
+  const dd=String(Math.min(99,Math.max(1,days|0))).padStart(2,'0');
+  let r='';for(let i=0;i<6;i++)r+=Math.floor(Math.random()*10);
+  const d8=dd+r;
+  return `FLUX-${d8.slice(0,4)}-${d8.slice(4)}-${fluxChecksum(d8)}`;
+}
 
+/* ============ 授权数据 ============ */
 let lic=null; try{lic=JSON.parse(store.get('vcfg_lic'))}catch(e){}
 let used=[]; try{used=JSON.parse(store.get('vcfg_used'))||[]}catch(e){}
 let trial=null; try{trial=JSON.parse(store.get('vcfg_trial'))}catch(e){}
@@ -482,7 +498,7 @@ function renderAuth(){
   if(left){left.textContent=ok?fmtRemain(lic.exp-Date.now()):(expd?'已到期':'—');left.className=ok?'ok':(expd?'bad':'warn')}
   const s=$('#sLicT');
   if(s){s.textContent=ok?'已授权 · 有效':(expd?'授权已过期':'未激活（预览模式）');
-    $('#sLic').className='lic '+(ok?'':(expd?'bad':'warn'))}
+    const sl=$('#sLic'); if(sl)sl.className='lic '+(ok?'':(expd?'bad':'warn'))}
   const se=$('#sLicExp'); if(se)se.textContent=lic?fmtDT(new Date(lic.exp)):'—';
   const fm=$('#footMode');
   if(fm){fm.textContent=ok?'已授权':'预览模式';fm.className=ok?'auth':'prev'}
@@ -535,7 +551,7 @@ function bindSw(id,name,src,onFn,offFn){
 }
 
 /* ============ 预览锁定系统 ============ */
-const LOCK_PANELS=['p-move','p-eco','p-vision','p-perf'];
+const LOCK_PANELS=['p-move','p-eco','p-vision'];
 let lastLockToast=0;
 const RIBBON_HTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9.5" rx="1.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>
  <b>预览模式</b><span>调试功能已锁定 · 输入激活码后解锁</span><button class="lock-go">前往激活</button>`;
@@ -577,9 +593,13 @@ document.addEventListener('click',e=>{
   }
 });
 
-/* ============ 侧栏导航 ============ */
+/* ============ 侧栏导航（性能调试 = 禁用提示） ============ */
 safe('导航切换',()=>{
   $$('.nv').forEach(b=>b.addEventListener('click',()=>{
+    if(b.dataset.p==='perf'){
+      toast('此模块无法使用，暂不支持','err','性能调试');
+      return;
+    }
     $$('.nv').forEach(x=>x.classList.remove('act'));
     $$('.panel').forEach(x=>x.classList.remove('act'));
     b.classList.add('act');
@@ -591,7 +611,6 @@ safe('导航切换',()=>{
 safe('移动调试',()=>{
   bindSw('#swHigh','人物高跳','移动调试',()=>mv.high=true,()=>mv.high=false);
   bindSw('#swGhost','幽灵模式','移动调试',()=>mv.ghost=true,()=>mv.ghost=false);
-  bindSw('#swDash','无限冲刺','移动调试',()=>mv.dash=true,()=>mv.dash=false);
   const g=$('#rgGrav');
   g.addEventListener('input',()=>{mv.grav=g.value/100;$('#vGrav').textContent=mv.grav.toFixed(2)});
   g.addEventListener('change',()=>toast(`重力倍率 → ${mv.grav.toFixed(2)}`,'ok','移动调试'));
@@ -600,54 +619,52 @@ safe('移动调试',()=>{
   s.addEventListener('change',()=>toast(`移动速度倍率 → ${mv.spd.toFixed(2)}`,'ok','移动调试'));
 });
 
-/* ============ 资源调试面板 ============ */
-safe('资源调试',()=>{
-  bindSw('#swAmmo','无限子弹','资源调试');
-  bindSw('#swArmor','无限护甲','资源调试');
-  bindSw('#swOneShot','一击必杀','资源调试');
-  bindSw('#swNoCD','无限技能冷却','资源调试');
+/* ============ 功能调试面板 ============ */
+safe('功能调试',()=>{
+  bindSw('#swAmmo','无限子弹','功能调试');
+  bindSw('#swBTrack','子弹追踪','功能调试',()=>fx.btrack=true,()=>fx.btrack=false);
+  bindSw('#swHeal','回血buff','功能调试',()=>fx.heal=true,()=>fx.heal=false);
+  bindSw('#swAoe','范围子弹','功能调试',()=>fx.aoe=true,()=>fx.aoe=false);
+  bindSw('#swNoCD','无限技能冷却','功能调试');
+  bindSw('#swAim','自瞄','功能调试',()=>aim.on=true,()=>aim.on=false);
+  const rc=$('#rgRecoil');
+  rc.addEventListener('input',()=>{aim.recoil=+rc.value;$('#vRecoil').textContent=rc.value});
+  rc.addEventListener('change',()=>toast(`压枪速度 → ${rc.value}${+rc.value===10?' · 秒拉':''}`,'ok','功能调试'));
+  const as=$('#rgAimSpd');
+  as.addEventListener('input',()=>{aim.speed=+as.value;$('#vAimSpd').textContent=as.value});
+  as.addEventListener('change',()=>toast(`瞄准速度 → ${as.value}`,'ok','功能调试'));
+  $('#segPart').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b)return;
+    $$('#segPart button').forEach(x=>x.classList.remove('act')); b.classList.add('act');
+    aim.part=b.dataset.part;
+    const cn={head:'头部',body:'身体',random:'随机'}[aim.part];
+    toast(`自瞄部位 → ${cn}`,'ok','功能调试');
+  });
   $('#moneyBtn').addEventListener('click',()=>{
     const n=Number($('#moneyInput').value);
-    if(!Number.isFinite(n)||n<0){toast('请输入有效的金钱数值','err','资源调试');return}
-    toast(`金钱参数已写入 · 当前 <b>${Math.round(n)}</b>`,'ok','资源调试');
+    if(!Number.isFinite(n)||n<0){toast('请输入有效的金钱数值','err','功能调试');return}
+    toast(`金钱参数已写入 · 当前 <b>${Math.round(n)}</b>`,'ok','功能调试');
   });
 });
 
-/* ============ 视觉调试面板 ============ */
-safe('功能调试',()=>{
-  bindSw('#swWH','透视','视觉调试',()=>fx.wallhack=true,()=>fx.wallhack=false);
-  bindSw('#swESP','绘制','视觉调试',()=>fx.esp=true,()=>fx.esp=false);
-  bindSw('#swTracer','子弹轨迹','视觉调试',()=>fx.tracers=true,()=>fx.tracers=false);
-  bindSw('#swWire','模型线框','视觉调试',()=>fx.wire=true,()=>fx.wire=false);
+/* ============ 绘制透视面板 ============ */
+safe('绘制透视',()=>{
+  bindSw('#swWH','透视','绘制透视',()=>fx.wallhack=true,()=>fx.wallhack=false);
+  bindSw('#swESP','绘制','绘制透视',()=>fx.esp=true,()=>fx.esp=false);
+  bindSw('#swTracer','子弹轨迹','绘制透视',()=>fx.tracers=true,()=>fx.tracers=false);
+  bindSw('#swWire','模型线框','绘制透视',()=>fx.wire=true,()=>fx.wire=false);
   const a=$('#rgEspA');
   a.addEventListener('input',()=>{fx.espAlpha=a.value/100;$('#vEspA').textContent=a.value+'%'});
-  a.addEventListener('change',()=>toast(`绘制透明度 → ${a.value}%`,'ok','视觉调试'));
+  a.addEventListener('change',()=>toast(`绘制透明度 → ${a.value}%`,'ok','绘制透视'));
   const w=$('#rgEspW');
   w.addEventListener('input',()=>{fx.lw=+w.value;$('#vEspW').textContent=w.value});
-  w.addEventListener('change',()=>toast(`绘制线条宽度 → ${w.value}px`,'ok','视觉调试'));
+  w.addEventListener('change',()=>toast(`绘制线条宽度 → ${w.value}px`,'ok','绘制透视'));
   $('#chipEsp').addEventListener('click',e=>{
     const b=e.target.closest('.chip'); if(!b)return;
     $$('#chipEsp .chip').forEach(x=>x.classList.remove('act')); b.classList.add('act');
     fx.espColor=b.dataset.c;
-    toast(`绘制颜色已切换 · ${b.dataset.c.toUpperCase()}`,'ok','视觉调试');
+    toast(`绘制颜色已切换 · ${b.dataset.c.toUpperCase()}`,'ok','绘制透视');
   });
-});
-
-/* ============ 性能调试面板 ============ */
-safe('性能调试，部分设备无法使用',()=>{
-  bindSw('#swHud','调试 HUD','性能调试',()=>fx.hud=true,()=>fx.hud=false);
-  bindSw('#swHit','碰撞盒显示','性能调试',()=>fx.hitbox=true,()=>fx.hitbox=false);
-  bindSw('#swNav','导航网格显示','性能调试',()=>fx.nav=true,()=>fx.nav=false);
-  $('#segFps').addEventListener('click',e=>{
-    const b=e.target.closest('button'); if(!b||b.classList.contains('act'))return;
-    $$('#segFps button').forEach(x=>x.classList.remove('act')); b.classList.add('act');
-    capFps=+b.dataset.f;
-    const c=$('#vpCap'); if(c)c.textContent=capFps;
-    toast(`帧率上限已设为 <b>${capFps} FPS</b>`,'ok','性能调试');
-  });
-  const ts=$('#rgTS');
-  ts.addEventListener('input',()=>{fx.tscale=ts.value/100;$('#vTS').textContent=fx.tscale.toFixed(2)+'x'});
-  ts.addEventListener('change',()=>toast(`时间缩放 → ${fx.tscale.toFixed(2)}x`,'ok','性能调试'));
 });
 
 /* ============ 调试视口渲染引擎 ============ */
@@ -663,7 +680,8 @@ safe('调试视口',()=>{
     {name:'BOT_SNIPER',bx:322,by:88,ax:58,ay:0,ph:4.2}
   ];
   const player={x:90,y:160};
-  const tracers=[];
+  const tracers=[], rings=[], heals=[];
+  const aimSt={x:player.x+46,y:player.y,recoilY:0,partPick:'head',pickT:0,lock:null};
   function occluded(x1,y1,x2,y2){
     for(let i=1;i<24;i++){
       const px=x1+(x2-x1)*i/24, py=y1+(y2-y1)*i/24;
@@ -688,14 +706,6 @@ safe('调试视口',()=>{
     vc.strokeStyle='rgba(236,232,225,.05)';vc.lineWidth=1;
     for(let x=0;x<=W;x+=40){vc.beginPath();vc.moveTo(x,0);vc.lineTo(x,H);vc.stroke()}
     for(let y=0;y<=H;y+=40){vc.beginPath();vc.moveTo(0,y);vc.lineTo(W,y);vc.stroke()}
-    if(fx.nav){
-      vc.fillStyle='rgba(62,207,154,.22)';
-      for(let x=20;x<W;x+=40)for(let y=20;y<H;y+=40){
-        let inWall=false;
-        for(const w of walls)if(x>w.x&&x<w.x+w.w&&y>w.y&&y<w.y+w.h)inWall=true;
-        if(!inWall)vc.fillRect(x-1.5,y-1.5,3,3);
-      }
-    }
     walls.forEach(w=>{
       vc.fillStyle='#101c27';vc.fillRect(w.x,w.y,w.w,w.h);
       vc.strokeStyle='#22323f';vc.strokeRect(w.x+.5,w.y+.5,w.w-1,w.h-1);
@@ -706,10 +716,44 @@ safe('调试视口',()=>{
       y:b.by+b.ay*Math.sin(simT*.6+b.ph)
     }));
     pts.forEach(p=>{p.vis=!occluded(player.x,player.y,p.x,p.y)});
-    if(fx.tracers&&Math.floor(simT*8)%9===0&&tracers.length<8){
-      const t=pts[Math.floor(Math.random()*pts.length)];
-      tracers.push({x2:t.x,y2:t.y,a:1});
+
+    /* --- 自瞄逻辑：部位选择 + 瞄准速度吸附 --- */
+    if(aim.part==='random'){
+      if(simT-aimSt.pickT>0.2){aimSt.pickT=simT;aimSt.partPick=Math.random()<.5?'head':'body'}
+    }else aimSt.partPick=aim.part;
+    let best=null,bd=1e9;
+    pts.forEach(p=>{
+      if(!p.vis&&!fx.wallhack)return;
+      const d=Math.hypot(p.x-aimSt.x,p.y-aimSt.y);
+      if(d<bd){bd=d;best=p}
+    });
+    aimSt.lock=best;
+    if(aim.on&&best){
+      const ty=aimSt.partPick==='head'?best.y-9:best.y;
+      const k=Math.min(.5,Math.max(.02,aim.speed*.025));
+      aimSt.x+=(best.x-aimSt.x)*k;
+      aimSt.y+=(ty-aimSt.y)*k;
+    }else{
+      /* 未锁定时准星轻微游离 */
+      aimSt.x+=((player.x+46+Math.sin(simT*1.2)*8)-aimSt.x)*.05;
+      aimSt.y+=((player.y+Math.cos(simT*.9)*5)-aimSt.y)*.05;
     }
+    /* 后座回拉：压枪速度决定恢复速率 */
+    aimSt.recoilY*=1-Math.min(.9,aim.recoil*.09);
+    if(aimSt.recoilY<.05)aimSt.recoilY=0;
+    const drawY=aimSt.y-aimSt.recoilY;
+
+    /* --- 开火：子弹追踪时弹道拐向锁定目标 --- */
+    if(fx.tracers&&Math.floor(simT*8)%9===0&&tracers.length<8){
+      let tp=null;
+      if(aim.on&&best)tp=best;
+      else if(fx.btrack&&best)tp=best;
+      else tp=pts[Math.floor(Math.random()*pts.length)];
+      tracers.push({x2:tp.x,y2:tp.y,a:1});
+      aimSt.recoilY+=4+Math.random()*2;
+    }
+
+    /* --- 实体绘制 --- */
     pts.forEach(p=>{
       if(!p.vis&&!fx.wallhack)return;
       const through=fx.wallhack&&!p.vis;
@@ -730,15 +774,35 @@ safe('调试视口',()=>{
     vc.fillStyle='#3ecf9a';
     vc.beginPath();vc.arc(player.x,player.y,6,0,7);vc.fill();
     vc.restore();
-    vc.strokeStyle='rgba(62,207,154,.4)';
-    vc.beginPath();vc.moveTo(player.x+8,player.y);vc.lineTo(player.x+22,player.y);vc.stroke();
     /* 子弹轨迹 */
     for(let i=tracers.length-1;i>=0;i--){
       const t=tracers[i]; t.a-=.025;
-      if(t.a<=0){tracers.splice(i,1);continue}
+      if(t.a<=0){
+        if(fx.aoe)rings.push({x:t.x2,y:t.y2,r:2,a:1});
+        tracers.splice(i,1);continue;
+      }
       vc.strokeStyle=fx.espColor; vc.globalAlpha=t.a*.8; vc.lineWidth=1;
       vc.beginPath();vc.moveTo(player.x,player.y);vc.lineTo(t.x2,t.y2);vc.stroke();
       vc.globalAlpha=1;
+    }
+    /* 范围子弹：落点冲击环 */
+    for(let i=rings.length-1;i>=0;i--){
+      const r=rings[i]; r.r+=2.2; r.a-=.05;
+      if(r.a<=0){rings.splice(i,1);continue}
+      vc.strokeStyle=fx.espColor; vc.globalAlpha=r.a*.7; vc.lineWidth=1.5;
+      vc.beginPath();vc.arc(r.x,r.y,r.r,0,7);vc.stroke();
+      vc.globalAlpha=1;
+    }
+    /* 回血buff：角色旁飘绿色加号 */
+    if(fx.heal&&Math.random()<.04&&heals.length<10){
+      heals.push({x:player.x+(Math.random()*36-18),y:player.y-4,a:1});
+    }
+    vc.font='700 11px Rajdhani';
+    for(let i=heals.length-1;i>=0;i--){
+      const hl=heals[i]; hl.y-=.45; hl.a-=.02;
+      if(hl.a<=0){heals.splice(i,1);continue}
+      vc.fillStyle=`rgba(62,207,154,${hl.a})`;
+      vc.fillText('+',hl.x,hl.y);
     }
     /* ESP 绘制层 */
     if(fx.esp){
@@ -755,17 +819,36 @@ safe('调试视口',()=>{
       });
       vc.globalAlpha=1;
     }
-    if(fx.hitbox){
-      vc.strokeStyle='rgba(62,207,154,.55)'; vc.lineWidth=1; vc.setLineDash([3,3]);
-      pts.forEach(p=>{ if(p.vis||fx.wallhack)vc.strokeRect(p.x-8,p.y-14,16,28) });
-      vc.strokeRect(player.x-6,player.y-6,12,12);
-      vc.setLineDash([]);
-    }
-    if(fx.hud){
-      vc.fillStyle='rgba(62,207,154,.9)'; vc.font='600 11px Rajdhani';
-      vc.fillText(`FPS ${Math.round(fps)}  CAP ${capFps}  ENTS ${bots.length+1}  TS ${fx.tscale.toFixed(2)}x`,12,20);
-      vc.fillStyle='rgba(236,232,225,.35)';
-      vc.fillText(`BUILD 0.9.5-dev · RANGE_01 · SIM ${simT.toFixed(1)}s`,12,36);
+    /* 准星 + 自瞄锁定指示 */
+    vc.strokeStyle='#ece8e1'; vc.lineWidth=1;
+    vc.beginPath();
+    vc.moveTo(aimSt.x-7,drawY);vc.lineTo(aimSt.x-2,drawY);
+    vc.moveTo(aimSt.x+2,drawY);vc.lineTo(aimSt.x+7,drawY);
+    vc.moveTo(aimSt.x,drawY-7);vc.lineTo(aimSt.x,drawY-2);
+    vc.moveTo(aimSt.x,drawY+2);vc.lineTo(aimSt.x,drawY+7);
+    vc.stroke();
+    vc.fillStyle='#ece8e1';
+    vc.fillRect(aimSt.x-1,drawY-1,2,2);
+    if(aim.on){
+      if(best){
+        const ty=aimSt.partPick==='head'?best.y-9:best.y;
+        vc.setLineDash([3,3]);
+        vc.strokeStyle=fx.espColor; vc.globalAlpha=.75;
+        vc.beginPath();vc.moveTo(player.x,player.y);vc.lineTo(best.x,ty);vc.stroke();
+        vc.setLineDash([]); vc.globalAlpha=1;
+        if(aimSt.partPick==='head'){
+          vc.strokeStyle=fx.espColor; vc.lineWidth=1.5;
+          vc.beginPath();vc.arc(best.x,ty,4,0,7);vc.stroke();
+        }else{
+          vc.strokeStyle=fx.espColor; vc.lineWidth=1.5;
+          vc.strokeRect(best.x-5,ty-6,10,12);
+        }
+        vc.fillStyle=fx.espColor; vc.font='600 9px Rajdhani';
+        vc.fillText(`LOCK · ${aimSt.partPick.toUpperCase()}`,aimSt.x+10,drawY-6);
+      }else{
+        vc.fillStyle='rgba(236,232,225,.45)'; vc.font='600 9px Rajdhani';
+        vc.fillText('SEARCHING…',aimSt.x+10,drawY-6);
+      }
     }
   }
   /* --- 移动场景 --- */
@@ -794,19 +877,10 @@ safe('调试视口',()=>{
     mc.beginPath();mc.moveTo(0,127);mc.lineTo(W,127);mc.stroke();
     mc.fillStyle='#101c27';mc.fillRect(298,84,20,43);
     mc.strokeStyle='#22323f';mc.strokeRect(298.5,84.5,19,42);
-    if(mv.dash){
-      mc.strokeStyle='rgba(62,207,154,.35)';mc.lineWidth=1;
-      for(let i=1;i<=3;i++){
-        mc.beginPath();
-        mc.moveTo(mst.x-10-i*14,120-mst.y-i*3);
-        mc.lineTo(mst.x-26-i*14,120-mst.y-i*3);
-        mc.stroke();
-      }
-    }
     const py=127-14-mst.y;
     mc.save();
     if(mv.ghost)mc.globalAlpha=.55;
-    mc.shadowColor='#3ecf9a';mc.shadowBlur=mv.ghost?4:8;
+    mc.shadowColor='#3ecf9a';mc.shadowBlur=8;
     mc.fillStyle='#3ecf9a';
     mc.fillRect(mst.x-7,py,14,14);
     mc.restore();
@@ -815,7 +889,7 @@ safe('调试视口',()=>{
       mc.strokeRect(mst.x-7.5,py-.5,15,15);mc.setLineDash([]);
     }
     let tag='';
-    if(mv.ghost)tag='NOCLIP'; else if(mv.high)tag='HIGH JUMP x3'; else if(mv.dash)tag='SPRINT';
+    if(mv.ghost)tag='NOCLIP'; else if(mv.high)tag='HIGH JUMP x3';
     if(tag){
       mc.fillStyle='rgba(236,232,225,.55)';mc.font='600 9px Rajdhani';
       mc.fillText(tag,mst.x-18,py-6);
@@ -823,27 +897,30 @@ safe('调试视口',()=>{
     $('#mvParam').textContent=`GRAV ${mv.grav.toFixed(2)} · SPD ${mv.spd.toFixed(2)}${mv.ghost?' · NOCLIP':''}`;
   }
   /* --- 主循环 --- */
-  let simT=0,fpsS=60,lastT=performance.now();
+  let simT=0,fpsS=60,lastT=performance.now(),frames=0;
   function loop(now){
     const dt=Math.min((now-lastT)/1000,.05); lastT=now;
     fpsS=fpsS*.95+(1/Math.max(dt,.001))*.05;
-    simT+=dt*fx.tscale;
+    simT+=dt;
+    frames++;
+    if(frames%30===0){const f=$('#vpFps'); if(f)f.textContent=Math.round(fpsS)}
     stepMove(); drawMove(); drawVision(simT,fpsS);
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
 });
 
-/* ============ 授权管理（FLUX 格式 + 一次性绑定 + 定期校验） ============ */
+/* ============ 授权管理 ============ */
 safe('授权管理',()=>{
   let wasAuthed=authOK();
   function doActivate(){
     const raw=$('#codeInput').value.trim().toUpperCase();
     if(!raw){toast('请先输入激活码','warn','AUTH');return}
-    if(!CODE_RE.test(raw)){toast('激活码格式无效 · 正确格式：<b>FLUX-0000-0000-AAAA</b>（两段4位数字 + 一段4位大写字母）','err','AUTH');return}
     if(used.includes(raw)){toast('该激活码已在本机使用过，无法重复激活','err','AUTH');return}
     const trialValid=trial&&!trial.used&&trial.code===raw;
-    const days=SPECIAL_CODES[raw]||(trialValid?1:DEFAULT_DAYS);
+    let days=SPECIAL_CODES[raw]||(trialValid?1:0);
+    if(!days)days=checkFlux(raw)||0;
+    if(!days){toast('激活码无效或校验位不匹配 · 请使用发卡工具签发的激活码','err','AUTH');return}
     const actAt=Date.now(), exp=actAt+days*864e5;
     lic={code:raw,actAt,exp};
     used.push(raw); store.set('vcfg_used',JSON.stringify(used));
@@ -856,7 +933,6 @@ safe('授权管理',()=>{
   }
   $('#actBtn').addEventListener('click',doActivate);
   $('#codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')doActivate()});
-  /* 定期校验：到期自动回锁并停止计时 */
   setInterval(()=>{
     const ok=authOK();
     const d=new Date();
@@ -870,7 +946,7 @@ safe('授权管理',()=>{
   renderAuth();
 });
 
-/* ============ 进入网站自动校验（renderAuth 现为全局函数，不再报错） ============ */
+/* ============ 进入网站自动校验 ============ */
 safe('启动校验',()=>{
   setTimeout(()=>toast('正在校验授权…','warn','AUTH'),300);
   setTimeout(()=>{
@@ -884,7 +960,7 @@ safe('启动校验',()=>{
 
 /* ============ 在线客服 ============ */
 safe('在线客服',()=>{
-  const chat=$('#chat'), chatBody=$('#chatBody'), CK='neon_chat';
+  const chat=$('#chat'), chatBody=$('#chatBody'), CK='flux_chat';
   let msgs=[]; try{msgs=JSON.parse(store.get(CK))||[]}catch(e){}
   function saveChat(){store.set(CK,JSON.stringify(msgs))}
   function renderMsg(m){
@@ -897,8 +973,8 @@ safe('在线客服',()=>{
   }
   function welcome(){
     return inSvc()
-      ?'您好，这里是《FLUX科技》开发组售后 ~ 激活、到期时间、调试参数等问题都可以直接问我，人工坐席服务时间 8:00-20:00。发送「激活码」可自助领取 1 天体验授权。'
-      :'您好，这里是《FLUX科技》售后（自助通道）。当前为<b>非服务时间</b>（8:00-20:00），留言会记录并在客服上线后回复；发送「激活码」可 24 小时自助领取 1 天体验授权。';
+      ?'您好，这里是《FLUX》开发组售后 ~ 激活、到期时间、调试参数等问题都可以直接问我，人工坐席服务时间 8:00-20:00。发送「激活码」可自助领取 1 天体验授权。'
+      :'您好，这里是《FLUX》售后（自助通道）。当前为<b>非服务时间</b>（8:00-20:00），留言会记录并在客服上线后回复；发送「激活码」可 24 小时自助领取 1 天体验授权。';
   }
   msgs.forEach(renderMsg);
   if(!msgs.length){const w={who:'bot',text:welcome(),t:nowHM()};msgs.push(w);renderMsg(w);saveChat()}
@@ -908,18 +984,12 @@ safe('在线客服',()=>{
     if(s)s.textContent=on?'在线':'非服务时间';
   }
   updSvc(); setInterval(updSvc,60000);
-  /* 生成 FLUX-0000-0000-AAAA 格式的体验码 */
-  function genCode(){
-    const dg=()=>{let r='';for(let i=0;i<4;i++)r+=Math.floor(Math.random()*10);return r};
-    const lt=()=>{const s='ABCDEFGHJKLMNPQRSTUVWXYZ';let r='';for(let i=0;i<4;i++)r+=s[Math.floor(Math.random()*s.length)];return r};
-    return `FLUX-${dg()}-${dg()}-${lt()}`;
-  }
   function handleTrial(){
     if(trial&&trial.used)
       return '您领取的体验码已在本机激活使用。<b>体验码仅限使用一次</b>，无法重复领取。如需继续使用，请加入开发交流群 735 512 448 联系管理获取正式激活码。';
     if(trial&&!trial.used)
       return `您此前已领取过体验码 <b>${trial.code}</b>（1 天，尚未使用），可直接前往「授权管理」输入激活，无需重复领取。`;
-    const code=genCode();
+    const code=genFlux(1);
     trial={code,used:false}; store.set('vcfg_trial',JSON.stringify(trial));
     return `自助通道已为您发放体验激活码：<b>${code}</b>（1 天 · 仅限本机使用一次）。前往「授权管理」输入即可激活，激活后调试功能解锁、稳定运行计时同步启动。`;
   }
@@ -972,7 +1042,7 @@ safe('在线客服',()=>{
   });
 });
 
-/* ============ 状态模拟（CPU/GPU 已按需求移除，仅保留 PING） ============ */
+/* ============ 状态模拟（仅保留 PING） ============ */
 safe('状态模拟',()=>{
   setInterval(()=>{const p=$('#ping');if(p)p.textContent=(18+Math.floor(Math.random()*14))+'ms'},3000);
 });
