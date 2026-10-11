@@ -234,7 +234,7 @@ canvas.viewport{display:block;width:100%}
     <div class="logo"><b>N</b></div>
     <div class="brand-t"><b>NEON PROTOCOL</b><span>DEV · v0.9.5</span></div>
   </div>
-  <div class="tb-title">霓虹协议 · 调试控制台<i>NEON PROTOCOL · DEV CONSOLE</i></div>
+  <div class="tb-title">FLUX · 网页控制台<i>NEON PROTOCOL · DEV CONSOLE</i></div>
   <div class="tb-right">
     <div class="uptime"><span class="dot" id="uptimeDot"></span><span id="uptimeLabel">稳定运行</span> <b id="uptime">待激活</b></div>
     <button class="btn-ghost" id="csBtn">
@@ -279,7 +279,7 @@ canvas.viewport{display:block;width:100%}
         <div class="sens-box">
           <div class="row"><label>人物高跳<span class="sub">跳跃高度提升约 3 倍</span></label><button class="sw" id="swHigh"></button></div>
           <div class="row"><label>幽灵模式<span class="sub">穿越墙体与障碍 · 免疫碰撞</span></label><button class="sw" id="swGhost"></button></div>
-          <div class="row"><label>无限冲刺<span class="sub">冲刺不消耗体力条</span></label><button class="sw" id="swDash"></button></div>
+          <div class="row"><label>静步加速<span class="sub">静步保持原本速度但是对手无法听见</span></label><button class="sw" id="swDash"></button></div>
           <div class="row"><label>重力倍率</label><input type="range" id="rgGrav" min="10" max="300" value="100"><b class="val" id="vGrav">1.00</b></div>
           <div class="row"><label>移动速度倍率</label><input type="range" id="rgSpd" min="50" max="300" value="100"><b class="val" id="vSpd">1.00</b></div>
         </div>
@@ -288,7 +288,7 @@ canvas.viewport{display:block;width:100%}
 
     <!-- 资源调试 -->
     <section class="panel" id="p-eco">
-      <div class="p-head"><h2>资源调试<span>ECONOMY DEBUG</span></h2><p>经济系统与资源参数写入，用于测试商店、弹道与成长曲线。</p></div>
+      <div class="p-head"><h2>功能调试<span>ECONOMY DEBUG</span></h2><p>经济系统与资源参数写入，用于测试商店、弹道与成长曲线。</p></div>
       <div class="sens-box" style="max-width:560px">
         <div class="money-row">
           <label style="font-size:13px;min-width:70px">金钱设置</label>
@@ -296,16 +296,16 @@ canvas.viewport{display:block;width:100%}
           <button class="btn-line" id="moneyBtn">写入参数</button>
         </div>
         <div class="row"><label>无限子弹<span class="sub">弹匣计数锁定，不触发换弹</span></label><button class="sw" id="swAmmo"></button></div>
-        <div class="row"><label>无限护甲<span class="sub">护甲值锁定为满值</span></label><button class="sw" id="swArmor"></button></div>
-        <div class="row"><label>一击必杀<span class="sub">伤害倍率 ×999 · 验证击杀反馈</span></label><button class="sw" id="swOneShot"></button></div>
-        <div class="row"><label>无限技能冷却<span class="sub">技能CD归零，便于连招测试</span></label><button class="sw" id="swNoCD"></button></div>
+        <div class="row"><label>回血增加<span class="sub">强制添加奶妈回血buff</span></label><button class="sw" id="swArmor"></button></div>
+        <div class="row"><label>子弹追踪<span class="sub">子弹追踪，开了秒拉10</span></label><button class="sw" id="swOneShot"></button></div>
+        <div class="row"><label>技能无冷却<span class="sub">技能CD归零，类似自定义无限技能</span></label><button class="sw" id="swNoCD"></button></div>
       </div>
       <p class="note">以上参数只作用于本地调试构建，写入后立即生效并伴随系统提示，方便对照数值策划案验证。</p>
     </section>
 
     <!-- 视觉调试 -->
     <section class="panel" id="p-vision">
-      <div class="p-head"><h2>视觉调试<span>VISUAL DEBUG</span></h2><p>敌人轮廓透视与调试绘制（Debug Draw）预览：墙后单位、方框标注、子弹轨迹与碰撞盒。</p></div>
+      <div class="p-head"><h2>绘制调试<span>VISUAL DEBUG</span></h2><p>敌人轮廓透视与调试绘制（Debug Draw）预览：墙后单位、方框标注、子弹轨迹与碰撞盒。</p></div>
       <div class="viewport-wrap" style="max-width:680px">
         <canvas class="viewport" id="vcVis" width="640" height="320"></canvas>
         <div class="vp-bar"><span>RANGE_01 · ENTITY VIEW</span><span>CAP <b id="vpCap">120</b> FPS</span></div>
@@ -329,7 +329,7 @@ canvas.viewport{display:block;width:100%}
     <section class="panel" id="p-perf">
       <div class="p-head"><h2>性能调试<span>PERFORMANCE</span></h2><p>帧率策略、调试 HUD 与时间缩放，定位性能瓶颈与验证游戏节奏。</p></div>
       <div class="sens-box" style="max-width:560px">
-        <div class="row"><label>帧率上限</label>
+        <div class="row"><label>强改设备???</label>
           <div class="seg" id="segFps">
             <button data-f="60">60</button><button data-f="90">90</button><button data-f="120" class="act">120</button><button data-f="144">144</button><button data-f="240">240</button>
           </div></div>
@@ -614,7 +614,7 @@ safe('资源调试',()=>{
 });
 
 /* ============ 视觉调试面板 ============ */
-safe('视觉调试',()=>{
+safe('功能调试',()=>{
   bindSw('#swWH','透视','视觉调试',()=>fx.wallhack=true,()=>fx.wallhack=false);
   bindSw('#swESP','绘制','视觉调试',()=>fx.esp=true,()=>fx.esp=false);
   bindSw('#swTracer','子弹轨迹','视觉调试',()=>fx.tracers=true,()=>fx.tracers=false);
@@ -634,7 +634,7 @@ safe('视觉调试',()=>{
 });
 
 /* ============ 性能调试面板 ============ */
-safe('性能调试',()=>{
+safe('性能调试，部分设备无法使用',()=>{
   bindSw('#swHud','调试 HUD','性能调试',()=>fx.hud=true,()=>fx.hud=false);
   bindSw('#swHit','碰撞盒显示','性能调试',()=>fx.hitbox=true,()=>fx.hitbox=false);
   bindSw('#swNav','导航网格显示','性能调试',()=>fx.nav=true,()=>fx.nav=false);
@@ -897,8 +897,8 @@ safe('在线客服',()=>{
   }
   function welcome(){
     return inSvc()
-      ?'您好，这里是《霓虹协议》开发组售后 ~ 激活、到期时间、调试参数等问题都可以直接问我，人工坐席服务时间 8:00-20:00。发送「激活码」可自助领取 1 天体验授权。'
-      :'您好，这里是《霓虹协议》售后（自助通道）。当前为<b>非服务时间</b>（8:00-20:00），留言会记录并在客服上线后回复；发送「激活码」可 24 小时自助领取 1 天体验授权。';
+      ?'您好，这里是《FLUX科技》开发组售后 ~ 激活、到期时间、调试参数等问题都可以直接问我，人工坐席服务时间 8:00-20:00。发送「激活码」可自助领取 1 天体验授权。'
+      :'您好，这里是《FLUX科技》售后（自助通道）。当前为<b>非服务时间</b>（8:00-20:00），留言会记录并在客服上线后回复；发送「激活码」可 24 小时自助领取 1 天体验授权。';
   }
   msgs.forEach(renderMsg);
   if(!msgs.length){const w={who:'bot',text:welcome(),t:nowHM()};msgs.push(w);renderMsg(w);saveChat()}
