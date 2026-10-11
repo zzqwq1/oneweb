@@ -3,308 +3,984 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>我的工具箱</title>
+<title>霓虹协议 · 调试控制台 — NEON PROTOCOL DEV CONSOLE</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Oswald:wght@500;600;700&family=Rajdhani:wght@500;600;700&family=Noto+Sans+SC:wght@400;500;700&display=swap" rel="stylesheet">
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  html { scroll-behavior: smooth; }
+:root{
+  --bg:#0f1923; --panel:#111c27; --panel2:#15212e;
+  --line:rgba(236,232,225,.07); --line2:rgba(236,232,225,.16);
+  --ink:#ece8e1; --dim:#7e8c96; --dim2:#4e5d68;
+  --red:#ff4655; --teal:#3ecf9a; --gold:#f2b544;
+  --f-num:'Rajdhani',sans-serif; --f-en:'Oswald',sans-serif; --f-cn:'Noto Sans SC',sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{height:100%}
+body{background:var(--bg);color:var(--ink);font:14px/1.6 var(--f-cn);display:flex;flex-direction:column;overflow:hidden}
+::-webkit-scrollbar{width:8px;height:8px}
+::-webkit-scrollbar-thumb{background:#223140;border-radius:4px}
+::-webkit-scrollbar-track{background:transparent}
 
-  body {
-    min-height: 100vh;
-    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
-    background: #0b0d16;
-    color: #e8eaf2;
-    overflow-x: hidden;
-  }
+/* ---------- 背景装饰 ---------- */
+.bg-deco{position:fixed;inset:0;z-index:0;pointer-events:none;background:
+ radial-gradient(900px 520px at 88% -8%, rgba(255,70,85,.07), transparent 60%),
+ radial-gradient(700px 500px at -8% 108%, rgba(62,207,154,.05), transparent 60%)}
+.bg-deco::before{content:'';position:absolute;inset:0;opacity:.4;
+ background-image:linear-gradient(var(--line) 1px,transparent 1px),linear-gradient(90deg,var(--line) 1px,transparent 1px);
+ background-size:46px 46px;
+ -webkit-mask-image:radial-gradient(900px 640px at 72% 18%,#000,transparent);
+ mask-image:radial-gradient(900px 640px at 72% 18%,#000,transparent)}
+.bg-deco::after{content:'';position:absolute;right:-150px;top:-150px;width:430px;height:430px;
+ border:1px solid rgba(255,70,85,.18);transform:rotate(45deg)}
 
-  /* ===== 背景灯效光斑 ===== */
-  .glow {
-    position: fixed;
-    border-radius: 50%;
-    filter: blur(100px);
-    opacity: .45;
-    pointer-events: none;
-    z-index: 0;
-  }
-  .glow-1 { width: 420px; height: 420px; background: #6a5cff; top: -120px; left: -100px; animation: drift1 16s ease-in-out infinite; }
-  .glow-2 { width: 380px; height: 380px; background: #ff5c8a; bottom: -110px; right: -80px; animation: drift2 20s ease-in-out infinite; }
-  .glow-3 { width: 300px; height: 300px; background: #2dd4bf; top: 38%; left: 58%; opacity: .28; animation: drift3 18s ease-in-out infinite; }
-  @keyframes drift1 { 50% { transform: translate(70px, 55px) scale(1.12); } }
-  @keyframes drift2 { 50% { transform: translate(-60px, -50px) scale(1.08); } }
-  @keyframes drift3 { 50% { transform: translate(-45px, 40px); } }
+/* ---------- 顶栏 ---------- */
+.topbar{position:relative;z-index:5;height:56px;flex:none;display:flex;align-items:center;gap:16px;
+ padding:0 18px;background:rgba(13,20,28,.92);border-bottom:1px solid var(--line2);backdrop-filter:blur(6px)}
+.brand{display:flex;align-items:center;gap:11px}
+.logo{width:34px;height:34px;background:var(--red);display:grid;place-items:center;
+ clip-path:polygon(0 0,100% 0,100% 78%,78% 100%,0 100%);animation:logoGlow 3.4s ease-in-out infinite}
+.logo b{font:700 18px var(--f-en);color:#fff;transform:translateY(-1px)}
+@keyframes logoGlow{0%,100%{box-shadow:0 0 6px rgba(255,70,85,.35)}50%{box-shadow:0 0 18px rgba(255,70,85,.7)}}
+.brand-t b{display:block;font:600 16px/1 var(--f-en);letter-spacing:2px}
+.brand-t span{font:600 10px var(--f-num);color:var(--red);letter-spacing:2px}
+.tb-title{flex:1;text-align:center;font-weight:700;font-size:15px;letter-spacing:4px}
+.tb-title i{font-style:normal;color:var(--dim2);font-size:11px;letter-spacing:3px;margin-left:10px}
+.tb-right{display:flex;align-items:center;gap:14px}
+.uptime{display:flex;align-items:center;gap:8px;font-size:12px;color:var(--dim)}
+.uptime b{font:600 14px var(--f-num);color:var(--teal);letter-spacing:1px;min-width:76px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--teal);display:inline-block;animation:blink 2.2s infinite}
+.dot.locked,.dot.offsvc{background:var(--gold);animation:none;box-shadow:0 0 6px rgba(242,181,68,.6)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+.btn-ghost{display:flex;align-items:center;gap:7px;padding:8px 15px;background:transparent;
+ border:1px solid var(--line2);color:var(--ink);font:500 13px var(--f-cn);cursor:pointer;transition:.2s}
+.btn-ghost:hover{border-color:var(--red);color:var(--red);box-shadow:0 0 12px rgba(255,70,85,.25)}
+.btn-ghost svg{width:15px;height:15px}
 
-  /* ===== 布局 ===== */
-  .app {
-    position: relative;
-    z-index: 1;
-    display: flex;
-    gap: 24px;
-    max-width: 1100px;
-    margin: 0 auto;
-    padding: 40px 24px;
-    align-items: flex-start;
-  }
+/* ---------- 主体 ---------- */
+.app{position:relative;z-index:2;flex:1;display:flex;min-height:0}
+.sidenav{width:130px;flex:none;border-right:1px solid var(--line);background:rgba(12,19,26,.7);
+ display:flex;flex-direction:column;padding:14px 0}
+.nv{position:relative;display:flex;flex-direction:column;align-items:center;gap:6px;padding:13px 4px;
+ background:transparent;border:0;color:var(--dim);cursor:pointer;font:500 12px var(--f-cn);transition:.2s;letter-spacing:1px}
+.nv svg{width:19px;height:19px}
+.nv:hover{color:var(--ink)}
+.nv.act{color:var(--ink);background:linear-gradient(90deg,rgba(255,70,85,.12),transparent)}
+.nv.act::before{content:'';position:absolute;left:0;top:20%;bottom:20%;width:3px;background:var(--red);box-shadow:0 0 8px rgba(255,70,85,.8)}
+.nv.locked::after{content:'';position:absolute;right:16px;top:13px;width:5px;height:5px;border-radius:50%;
+ background:var(--gold);box-shadow:0 0 6px rgba(242,181,68,.8)}
+.nv-foot{margin-top:auto;text-align:center;font:600 9px/1.7 var(--f-num);color:var(--dim2);letter-spacing:2px}
 
-  .glass {
-    background: rgba(255, 255, 255, 0.06);
-    backdrop-filter: blur(22px);
-    -webkit-backdrop-filter: blur(22px);
-    border: 1px solid rgba(255, 255, 255, 0.12);
-    border-radius: 20px;
-  }
+main{flex:1;min-width:0;position:relative}
+.panel{display:none;height:100%;overflow-y:auto;padding:24px 28px}
+.panel.act{display:block;animation:pin .35s ease}
+@keyframes pin{from{opacity:0;transform:translateY(12px)}}
+.p-head{margin-bottom:20px}
+.p-head h2{font:700 22px var(--f-cn);letter-spacing:2px}
+.p-head h2 span{font:600 11px var(--f-en);color:var(--red);letter-spacing:4px;margin-left:12px;vertical-align:3px}
+.p-head p{font-size:12px;color:var(--dim);margin-top:3px}
 
-  /* ===== 侧边栏 ===== */
-  .sidebar {
-    width: 250px;
-    flex-shrink: 0;
-    padding: 26px 18px;
-    position: sticky;
-    top: 40px;
-    overflow: hidden;
-  }
-  /* 侧边灯带 */
-  .sidebar::before {
-    content: "";
-    position: absolute;
-    left: 0;
-    top: 18%;
-    bottom: 18%;
-    width: 3px;
-    background: linear-gradient(180deg, transparent, #6a5cff, #ff5c8a, transparent);
-    filter: blur(1px);
-    box-shadow: 0 0 14px rgba(122, 108, 255, .9);
-  }
-  .sidebar::after {
-    content: "";
-    position: absolute;
-    left: -1px;
-    width: 5px;
-    height: 90px;
-    border-radius: 5px;
-    background: linear-gradient(180deg, transparent, rgba(255,255,255,.95), transparent);
-    filter: blur(1.5px);
-    animation: lampRun 3.6s linear infinite;
-  }
-  @keyframes lampRun { from { top: -90px; } to { top: 100%; } }
+/* ---------- 预览锁定 ---------- */
+.lock-ribbon{display:flex;align-items:center;gap:12px;padding:10px 16px;margin-bottom:18px;flex-wrap:wrap;
+ background:rgba(242,181,68,.07);border:1px solid rgba(242,181,68,.35);color:var(--gold);font-size:12.5px}
+.lock-ribbon svg{width:15px;height:15px;flex:none}
+.lock-ribbon b{font-size:13px;letter-spacing:1px}
+.lock-ribbon span{color:var(--dim)}
+.lock-ribbon button{margin-left:auto;padding:7px 16px;background:transparent;border:1px solid rgba(242,181,68,.55);
+ color:var(--gold);font:600 12px var(--f-cn);cursor:pointer;transition:.2s;letter-spacing:1px}
+.lock-ribbon button:hover{background:rgba(242,181,68,.14);box-shadow:0 0 12px rgba(242,181,68,.25)}
+.is-locked button:disabled,.is-locked input:disabled{opacity:.38;cursor:not-allowed;filter:saturate(.5)}
+.is-locked .viewport-wrap{opacity:.6}
 
-  .brand {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-bottom: 26px;
-    padding-left: 8px;
-  }
-  .brand-dot {
-    width: 12px; height: 12px;
-    border-radius: 50%;
-    background: #8b7dff;
-    box-shadow: 0 0 10px #8b7dff, 0 0 22px rgba(139,125,255,.7);
-    animation: pulse 2.4s ease-in-out infinite;
-  }
-  @keyframes pulse { 50% { box-shadow: 0 0 4px #8b7dff, 0 0 10px rgba(139,125,255,.4); } }
-  .brand h1 { font-size: 1.1rem; font-weight: 600; letter-spacing: .05em; }
+/* ---------- 通用控件 ---------- */
+.row{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:11px 2px;border-bottom:1px dashed var(--line)}
+.row label{font-size:13px;color:var(--ink)}
+.row .sub{display:block;font-size:11px;color:var(--dim2)}
+.val{font:600 14px var(--f-num);color:var(--red);min-width:44px;text-align:right}
+input[type=range]{width:150px;accent-color:var(--red);cursor:pointer}
+.sw{position:relative;width:42px;height:22px;flex:none;background:#1a2632;border:1px solid var(--line2);cursor:pointer;transition:.25s}
+.sw::after{content:'';position:absolute;left:3px;top:3px;width:14px;height:14px;background:#5a6a75;transition:.25s cubic-bezier(.6,0,.2,1.4)}
+.sw.on{background:rgba(255,70,85,.16);border-color:rgba(255,70,85,.6)}
+.sw.on::after{left:23px;background:var(--red);box-shadow:0 0 8px rgba(255,70,85,.8)}
+.seg{display:inline-flex;border:1px solid var(--line2)}
+.seg button{padding:8px 16px;background:transparent;border:0;border-right:1px solid var(--line);color:var(--dim);font:500 12px var(--f-cn);cursor:pointer;transition:.2s;letter-spacing:1px}
+.seg button:last-child{border-right:0}
+.seg button:hover{color:var(--ink)}
+.seg button.act{background:rgba(255,70,85,.14);color:var(--red)}
+.btn-solid{padding:10px 22px;background:var(--red);border:0;color:#fff;font:700 13px var(--f-cn);cursor:pointer;letter-spacing:2px;transition:.2s;clip-path:polygon(0 0,100% 0,100% 70%,92% 100%,0 100%)}
+.btn-solid:hover{filter:brightness(1.15);box-shadow:0 4px 18px rgba(255,70,85,.4)}
+.btn-line{padding:9px 18px;background:transparent;border:1px solid var(--line2);color:var(--ink);font:500 13px var(--f-cn);cursor:pointer;transition:.2s}
+.btn-line:hover{border-color:var(--teal);color:var(--teal)}
+.chip{width:26px;height:26px;border:2px solid transparent;cursor:pointer;transition:.2s}
+.chip:hover{transform:scale(1.12)}
+.chip.act{border-color:var(--ink);box-shadow:0 0 8px rgba(255,255,255,.25)}
 
-  nav { display: flex; flex-direction: column; gap: 6px; }
-  .nav-item {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    padding: 12px 14px;
-    border: 1px solid transparent;
-    border-radius: 12px;
-    color: rgba(232,234,242,.65);
-    font-size: .95rem;
-    text-decoration: none;
-    transition: all .25s;
-  }
-  .nav-item:hover { background: rgba(255,255,255,.07); color: #fff; }
-  .nav-item .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.18);
-    transition: all .25s;
-    flex-shrink: 0;
-  }
-  .nav-item:hover .dot { background: #8b7dff; box-shadow: 0 0 10px #8b7dff; }
-  .nav-item .count {
-    margin-left: auto;
-    font-size: .72rem;
-    color: rgba(232,234,242,.4);
-  }
+/* ---------- 视口 ---------- */
+.lab{display:grid;grid-template-columns:1fr 300px;gap:22px}
+.viewport-wrap{border:1px solid var(--line);background:#0a1118}
+canvas.viewport{display:block;width:100%}
+.vp-bar{display:flex;justify-content:space-between;padding:6px 12px;border-top:1px solid var(--line);
+ font:600 10px var(--f-num);color:var(--dim2);letter-spacing:2px}
+.stage-tip{margin-top:10px;font-size:11px;color:var(--dim2)}
+.sens-box{border:1px solid var(--line);padding:6px 18px;background:rgba(255,255,255,.014)}
+.chips{display:flex;gap:9px;padding:12px 2px}
+.note{margin-top:16px;font-size:12px;color:var(--dim2);border-left:2px solid var(--line2);padding-left:12px}
+.money-row{display:flex;gap:10px;align-items:center;padding:11px 2px}
+.money-row input{width:140px;padding:9px 12px;background:#0c141c;border:1px solid var(--line2);color:var(--ink);
+ font:600 15px var(--f-num);letter-spacing:1px;outline:none}
+.money-row input:focus{border-color:var(--red)}
 
-  /* ===== 分类区块 ===== */
-  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+/* ---------- 授权管理 ---------- */
+.auth-grid{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.auth-state{border:1px solid var(--line);background:rgba(255,255,255,.014)}
+.st-line{display:flex;justify-content:space-between;align-items:center;padding:13px 18px;border-bottom:1px solid var(--line)}
+.st-line:last-child{border-bottom:0}
+.st-line span{font-size:12px;color:var(--dim)}
+.st-line b{font:600 13.5px var(--f-num);letter-spacing:.5px}
+.st-line b.warn{color:var(--gold)} .st-line b.ok{color:var(--teal)} .st-line b.bad{color:var(--red)}
+.auth-act{border:1px solid var(--line);background:rgba(255,255,255,.014);padding:22px;display:flex;flex-direction:column;gap:12px}
+.auth-act label{font-size:12px;color:var(--dim);letter-spacing:1px}
+.act-row{display:flex;gap:10px}
+.act-row input{flex:1;padding:11px 13px;background:#0c141c;border:1px solid var(--line2);color:var(--ink);
+ font:600 14px var(--f-num);letter-spacing:1px;outline:none;transition:.2s}
+.act-row input:focus{border-color:var(--red);box-shadow:0 0 10px rgba(255,70,85,.2)}
+.hint{font-size:11px;color:var(--dim2);line-height:1.7}
+.hint b{color:var(--teal);font-weight:500}
 
-  .section {
-    padding: 30px 34px 34px;
-    position: relative;
-    overflow: hidden;
-    scroll-margin-top: 24px;
-  }
-  .section::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: 12%;
-    right: 12%;
-    height: 2px;
-    background: linear-gradient(90deg, transparent, rgba(139,125,255,.9), rgba(255,92,138,.9), transparent);
-    box-shadow: 0 0 12px rgba(139,125,255,.5);
-  }
-  .section-head h2 { font-size: 1.35rem; font-weight: 700; }
-  .section-head p { margin-top: 5px; font-size: .82rem; color: rgba(232,234,242,.5); }
+/* ---------- 右侧状态栏 ---------- */
+.status{width:242px;flex:none;border-left:1px solid var(--line);background:rgba(12,19,26,.7);overflow-y:auto;padding:16px}
+.sb-block{margin-bottom:22px}
+.sb-block h4{font:600 11px var(--f-en);letter-spacing:3px;color:var(--dim2);border-bottom:1px solid var(--line);padding-bottom:7px;margin-bottom:11px}
+.lic{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+.lic.warn .dot{background:var(--gold);animation:none}
+.lic.bad .dot{background:var(--red);animation:none}
+.lic-line{font-size:12px;color:var(--dim);margin-top:7px}
+.lic-line b{font:600 12px var(--f-num);color:var(--ink)}
+.sess{display:flex;justify-content:space-between;font-size:12px;color:var(--dim);padding:4px 0}
+.sess b{font:600 13px var(--f-num);color:var(--ink)}
+.sess b.wait{color:var(--gold)}
+.tips p{font-size:11px;color:var(--dim);line-height:1.8}
 
-  /* 工具卡片 */
-  .tool-card {
-    margin-top: 20px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 18px;
-    padding: 20px 22px;
-    background: rgba(255,255,255,.05);
-    border: 1px solid rgba(255,255,255,.1);
-    border-radius: 14px;
-    transition: all .25s;
-  }
-  .tool-card:hover {
-    border-color: rgba(139,125,255,.45);
-    box-shadow: 0 4px 24px rgba(139,125,255,.12);
-  }
-  .tool-info h3 { font-size: 1.05rem; font-weight: 600; }
-  .tool-info p { margin-top: 4px; font-size: .82rem; color: rgba(232,234,242,.5); }
+/* ---------- 底栏 ---------- */
+.footbar{position:relative;z-index:5;flex:none;height:34px;display:flex;align-items:center;gap:14px;
+ padding:0 18px;background:rgba(13,20,28,.92);border-top:1px solid var(--line2);font-size:11.5px;color:var(--dim)}
+.footbar i{font-style:normal;color:var(--dim2)}
+.footbar .grow{flex:1}
+.footbar b{font:600 12px var(--f-num);color:var(--ink)}
+.footbar .ok{display:flex;align-items:center;gap:6px;color:var(--teal)}
+#footMode{font-weight:600;letter-spacing:1px}
+#footMode.prev{color:var(--gold)} #footMode.auth{color:var(--teal)}
 
-  /* sfz 按钮：纯 HTML 下载链接 */
-  .btn-sfz {
-    display: inline-block;
-    padding: 11px 26px;
-    border: none;
-    border-radius: 12px;
-    cursor: pointer;
-    background: linear-gradient(135deg, #6a5cff, #ff5c8a);
-    color: #fff;
-    font-size: .95rem;
-    font-weight: 600;
-    font-family: inherit;
-    text-decoration: none;
-    box-shadow: 0 4px 18px rgba(106,92,255,.4);
-    transition: all .25s;
-    white-space: nowrap;
-  }
-  .btn-sfz:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 8px 28px rgba(255,92,138,.55);
-  }
-  .btn-sfz:active { transform: translateY(0); }
+/* ---------- Toast ---------- */
+.toasts{position:fixed;top:66px;right:18px;z-index:99;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toast{min-width:250px;max-width:340px;background:#141f2b;border:1px solid var(--line2);border-left:3px solid var(--teal);
+ padding:10px 14px;font-size:12.5px;line-height:1.5;box-shadow:0 10px 28px rgba(0,0,0,.5);animation:tin .3s ease}
+.toast em{display:block;font:600 10px var(--f-en);font-style:normal;letter-spacing:2px;color:var(--dim2);margin-bottom:2px}
+.toast.warn{border-left-color:var(--gold)} .toast.err{border-left-color:var(--red)}
+.toast.out{animation:tout .3s forwards}
+@keyframes tin{from{opacity:0;transform:translateX(26px)}}
+@keyframes tout{to{opacity:0;transform:translateX(26px)}}
 
-  /* 空分类提示 */
-  .empty { padding: 46px 0 36px; text-align: center; }
-  .empty-icon {
-    width: 64px; height: 64px;
-    margin: 0 auto 18px;
-    border-radius: 50%;
-    border: 2px dashed rgba(255,255,255,.22);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .empty-icon::after {
-    content: "";
-    width: 10px; height: 10px;
-    border-radius: 50%;
-    background: rgba(255,255,255,.35);
-    box-shadow: 0 0 14px rgba(139,125,255,.9);
-  }
-  .empty-text {
-    font-size: .95rem;
-    color: rgba(232,234,242,.45);
-    letter-spacing: .1em;
-  }
+/* ---------- 在线客服 ---------- */
+.chat{position:fixed;right:26px;bottom:52px;z-index:98;width:342px;height:472px;display:flex;flex-direction:column;
+ background:#111c27;border:1px solid var(--line2);box-shadow:0 20px 60px rgba(0,0,0,.6);
+ opacity:0;transform:translateY(18px) scale(.98);pointer-events:none;transition:.28s cubic-bezier(.3,1.2,.4,1)}
+.chat.open{opacity:1;transform:none;pointer-events:auto}
+.chat-h{flex:none;display:flex;justify-content:space-between;align-items:center;padding:12px 14px;
+ background:var(--panel2);border-bottom:1px solid var(--line2)}
+.chat-h .t{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
+.chat-h .t em{font-style:normal;font:600 11px var(--f-num);color:var(--dim)}
+.chat-h .ops{display:flex;gap:6px}
+.chat-h .ops button{background:transparent;border:1px solid var(--line);color:var(--dim);font-size:11px;
+ padding:4px 9px;cursor:pointer;transition:.2s;font-family:var(--f-cn)}
+.chat-h .ops button:hover{color:var(--red);border-color:var(--red)}
+.chat-b{flex:1;overflow-y:auto;padding:14px}
+.msg{display:flex;gap:9px;margin:12px 0;animation:mup .3s ease}
+@keyframes mup{from{opacity:0;transform:translateY(8px)}}
+.msg.me{flex-direction:row-reverse}
+.av{width:30px;height:30px;flex:none;border-radius:50%;background:#1c2a38;display:grid;place-items:center;color:var(--teal)}
+.av svg{width:15px;height:15px}
+.msg.me .av{background:rgba(255,70,85,.16);color:var(--red)}
+.bub{max-width:72%;padding:9px 13px;font-size:13px;line-height:1.6;background:#18242f;border:1px solid var(--line)}
+.msg.me .bub{background:rgba(255,70,85,.12);border-color:rgba(255,70,85,.28)}
+.bub time{display:block;font:600 10px var(--f-num);color:var(--dim2);margin-top:5px}
+.msg.me .bub time{text-align:right}
+.typing{flex:none;display:none;padding:5px 16px;font-size:11px;color:var(--dim)}
+.typing.on{display:block}
+.typing span{animation:tdt 1.2s infinite;display:inline-block}
+.typing span:nth-child(2){animation-delay:.2s}.typing span:nth-child(3){animation-delay:.4s}
+@keyframes tdt{0%,100%{opacity:.2}50%{opacity:1}}
+.chat-f{flex:none;display:flex;gap:8px;padding:11px;border-top:1px solid var(--line2);background:var(--panel2)}
+.chat-f input{flex:1;padding:10px 12px;background:#0c141c;border:1px solid var(--line2);color:var(--ink);
+ font:13px var(--f-cn);outline:none;transition:.2s}
+.chat-f input:focus{border-color:rgba(255,70,85,.5)}
+.chat-f button{width:42px;background:var(--red);border:0;color:#fff;cursor:pointer;display:grid;place-items:center;transition:.2s}
+.chat-f button:hover{filter:brightness(1.15)}
+.chat-f button svg{width:16px;height:16px}
 
-  /* ===== 移动端 ===== */
-  @media (max-width: 768px) {
-    .app { flex-direction: column; padding: 20px 14px; gap: 16px; }
-    .sidebar { width: 100%; position: static; padding: 18px 14px; }
-    .brand { margin-bottom: 14px; }
-    nav { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
-    .nav-item { white-space: nowrap; padding: 9px 14px; }
-    .nav-item .count { display: none; }
-    .section { padding: 24px 20px 28px; }
-  }
+@media (max-width:1120px){.status{display:none}}
+@media (max-width:900px){
+ .sidenav{width:54px}.nv span{display:none}.nv-foot{display:none}
+ .tb-title{display:none}.lab,.auth-grid{grid-template-columns:1fr}
+ .nv.locked::after{right:10px}
+}
 </style>
 </head>
 <body>
+<div class="bg-deco"></div>
+<noscript><div style="position:fixed;inset:0;z-index:999;background:#0f1923;color:#ece8e1;display:grid;place-items:center;font-size:15px">此页面需要启用 JavaScript 才能运行，请用 Chrome / Edge 浏览器直接打开本文件。</div></noscript>
 
-<div class="glow glow-1"></div>
-<div class="glow glow-2"></div>
-<div class="glow glow-3"></div>
+<header class="topbar">
+  <div class="brand">
+    <div class="logo"><b>N</b></div>
+    <div class="brand-t"><b>NEON PROTOCOL</b><span>DEV · v0.9.5</span></div>
+  </div>
+  <div class="tb-title">霓虹协议 · 调试控制台<i>NEON PROTOCOL · DEV CONSOLE</i></div>
+  <div class="tb-right">
+    <div class="uptime"><span class="dot" id="uptimeDot"></span><span id="uptimeLabel">稳定运行</span> <b id="uptime">待激活</b></div>
+    <button class="btn-ghost" id="csBtn">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.5" y="13" width="4" height="6" rx="1.2"/><rect x="17.5" y="13" width="4" height="6" rx="1.2"/><path d="M19 19a4 4 0 0 1-4 3h-2"/></svg>
+      联系售后
+    </button>
+  </div>
+</header>
 
 <div class="app">
-  <!-- 侧边栏 -->
-  <aside class="sidebar glass">
-    <div class="brand">
-      <span class="brand-dot"></span>
-      <h1>我的工具箱</h1>
-    </div>
-    <nav>
-      <a class="nav-item" href="#cat1"><span class="dot"></span><span>分类1</span><span class="count">1 项</span></a>
-      <a class="nav-item" href="#cat2"><span class="dot"></span><span>分类2</span><span class="count">空</span></a>
-      <a class="nav-item" href="#cat3"><span class="dot"></span><span>分类3</span><span class="count">空</span></a>
-      <a class="nav-item" href="#cat4"><span class="dot"></span><span>分类4</span><span class="count">空</span></a>
-      <a class="nav-item" href="#cat5"><span class="dot"></span><span>分类5</span><span class="count">空</span></a>
-    </nav>
-  </aside>
+  <nav class="sidenav">
+    <button class="nv act" data-p="move">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M12 20V8M12 8l-4 4M12 8l4 4M5 20h14"/><path d="M8 4h8"/></svg>
+      <span>移动调试</span></button>
+    <button class="nv" data-p="eco">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="8"/><path d="M12 8v8M9.5 10h5M9.5 14h5"/></svg>
+      <span>资源调试</span></button>
+    <button class="nv" data-p="vision">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/></svg>
+      <span>视觉调试</span></button>
+    <button class="nv" data-p="perf">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/><path d="M2.5 18h19"/></svg>
+      <span>性能调试</span></button>
+    <button class="nv" data-p="auth">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="14" r="4"/><path d="M11 11l8-8M16 6l2.5 2.5M13.5 8.5L16 11"/></svg>
+      <span>授权管理</span></button>
+    <div class="nv-foot">DEV BUILD<br>RANGE_01</div>
+  </nav>
 
-  <!-- 五个分类，静态排列 -->
-  <main class="main">
-
-    <section class="section glass" id="cat1">
-      <div class="section-head">
-        <h2>分类1</h2>
-        <p>共 1 项工具</p>
-      </div>
-      <div class="tool-card">
-        <div class="tool-info">
-          <h3>sfz</h3>
-          <p>点击按钮下载 sfz.txt 文件</p>
+  <main>
+    <!-- 移动调试 -->
+    <section class="panel act" id="p-move">
+      <div class="p-head"><h2>移动调试<span>MOVEMENT DEBUG</span></h2><p>角色机动参数调试视口：跳跃、穿墙与冲刺效果实时演示，参数仅在开发构建中生效。</p></div>
+      <div class="lab">
+        <div>
+          <div class="viewport-wrap">
+            <canvas class="viewport" id="vcMove" width="640" height="150"></canvas>
+            <div class="vp-bar"><span>SANDBOX_01 · CHARACTER</span><span id="mvParam">GRAV 1.00 · SPD 1.00</span></div>
+          </div>
+          <p class="stage-tip">演示角色自动循环跳跃与往返移动，用于验证调试参数的手感表现。</p>
         </div>
-        <a class="btn-sfz" href="data:text/plain;charset=utf-8;base64,c2Z6" download="sfz.txt">下载 TXT</a>
+        <div class="sens-box">
+          <div class="row"><label>人物高跳<span class="sub">跳跃高度提升约 3 倍</span></label><button class="sw" id="swHigh"></button></div>
+          <div class="row"><label>幽灵模式<span class="sub">穿越墙体与障碍 · 免疫碰撞</span></label><button class="sw" id="swGhost"></button></div>
+          <div class="row"><label>无限冲刺<span class="sub">冲刺不消耗体力条</span></label><button class="sw" id="swDash"></button></div>
+          <div class="row"><label>重力倍率</label><input type="range" id="rgGrav" min="10" max="300" value="100"><b class="val" id="vGrav">1.00</b></div>
+          <div class="row"><label>移动速度倍率</label><input type="range" id="rgSpd" min="50" max="300" value="100"><b class="val" id="vSpd">1.00</b></div>
+        </div>
       </div>
     </section>
 
-    <section class="section glass" id="cat2">
-      <div class="section-head"><h2>分类2</h2></div>
-      <div class="empty">
-        <div class="empty-icon"></div>
-        <p class="empty-text">目前分类无内容</p>
+    <!-- 资源调试 -->
+    <section class="panel" id="p-eco">
+      <div class="p-head"><h2>资源调试<span>ECONOMY DEBUG</span></h2><p>经济系统与资源参数写入，用于测试商店、弹道与成长曲线。</p></div>
+      <div class="sens-box" style="max-width:560px">
+        <div class="money-row">
+          <label style="font-size:13px;min-width:70px">金钱设置</label>
+          <input id="moneyInput" value="9000" inputmode="numeric">
+          <button class="btn-line" id="moneyBtn">写入参数</button>
+        </div>
+        <div class="row"><label>无限子弹<span class="sub">弹匣计数锁定，不触发换弹</span></label><button class="sw" id="swAmmo"></button></div>
+        <div class="row"><label>无限护甲<span class="sub">护甲值锁定为满值</span></label><button class="sw" id="swArmor"></button></div>
+        <div class="row"><label>一击必杀<span class="sub">伤害倍率 ×999 · 验证击杀反馈</span></label><button class="sw" id="swOneShot"></button></div>
+        <div class="row"><label>无限技能冷却<span class="sub">技能CD归零，便于连招测试</span></label><button class="sw" id="swNoCD"></button></div>
+      </div>
+      <p class="note">以上参数只作用于本地调试构建，写入后立即生效并伴随系统提示，方便对照数值策划案验证。</p>
+    </section>
+
+    <!-- 视觉调试 -->
+    <section class="panel" id="p-vision">
+      <div class="p-head"><h2>视觉调试<span>VISUAL DEBUG</span></h2><p>敌人轮廓透视与调试绘制（Debug Draw）预览：墙后单位、方框标注、子弹轨迹与碰撞盒。</p></div>
+      <div class="viewport-wrap" style="max-width:680px">
+        <canvas class="viewport" id="vcVis" width="640" height="320"></canvas>
+        <div class="vp-bar"><span>RANGE_01 · ENTITY VIEW</span><span>CAP <b id="vpCap">120</b> FPS</span></div>
+      </div>
+      <div class="sens-box" style="max-width:680px;margin-top:16px">
+        <div class="chips" id="chipEsp">
+          <button class="chip act" data-c="#ff4655" style="background:#ff4655"></button>
+          <button class="chip" data-c="#3ecf9a" style="background:#3ecf9a"></button>
+          <button class="chip" data-c="#ffd24a" style="background:#ffd24a"></button>
+        </div>
+        <div class="row"><label>透视<span class="sub">墙体后的敌人轮廓保持可见</span></label><button class="sw" id="swWH"></button></div>
+        <div class="row"><label>绘制<span class="sub">方框 · 名称 · 距离 · 连线标注</span></label><button class="sw" id="swESP"></button></div>
+        <div class="row"><label>子弹轨迹<span class="sub">显示弹道射线与落点</span></label><button class="sw" id="swTracer"></button></div>
+        <div class="row"><label>模型线框<span class="sub">实体以线框模式渲染</span></label><button class="sw" id="swWire"></button></div>
+        <div class="row"><label>绘制透明度</label><input type="range" id="rgEspA" min="30" max="100" value="90"><b class="val" id="vEspA">90%</b></div>
+        <div class="row"><label>线条宽度</label><input type="range" id="rgEspW" min="1" max="3" value="1"><b class="val" id="vEspW">1</b></div>
       </div>
     </section>
 
-    <section class="section glass" id="cat3">
-      <div class="section-head"><h2>分类3</h2></div>
-      <div class="empty">
-        <div class="empty-icon"></div>
-        <p class="empty-text">目前分类无内容</p>
+    <!-- 性能调试 -->
+    <section class="panel" id="p-perf">
+      <div class="p-head"><h2>性能调试<span>PERFORMANCE</span></h2><p>帧率策略、调试 HUD 与时间缩放，定位性能瓶颈与验证游戏节奏。</p></div>
+      <div class="sens-box" style="max-width:560px">
+        <div class="row"><label>帧率上限</label>
+          <div class="seg" id="segFps">
+            <button data-f="60">60</button><button data-f="90">90</button><button data-f="120" class="act">120</button><button data-f="144">144</button><button data-f="240">240</button>
+          </div></div>
+        <div class="row"><label>调试 HUD<span class="sub">在视口左上角叠加运行数据</span></label><button class="sw" id="swHud"></button></div>
+        <div class="row"><label>碰撞盒显示<span class="sub">绘制所有实体的碰撞体积</span></label><button class="sw" id="swHit"></button></div>
+        <div class="row"><label>导航网格显示<span class="sub">可视化 AI 寻路网格</span></label><button class="sw" id="swNav"></button></div>
+        <div class="row"><label>时间缩放<span class="sub">慢动作 / 快进 · 调试节奏用</span></label><input type="range" id="rgTS" min="25" max="300" value="100"><b class="val" id="vTS">1.00x</b></div>
       </div>
+      <p class="note">帧率上限会同步显示在视口状态栏；开启调试 HUD 后，左上角会实时输出 FPS、实体数与缩放倍率。</p>
     </section>
 
-    <section class="section glass" id="cat4">
-      <div class="section-head"><h2>分类4</h2></div>
-      <div class="empty">
-        <div class="empty-icon"></div>
-        <p class="empty-text">目前分类无内容</p>
+    <!-- 授权管理 -->
+    <section class="panel" id="p-auth">
+      <div class="p-head"><h2>授权管理<span>LICENSE</span></h2><p>激活码与设备绑定、仅可使用一次；激活与到期时间精确到秒，每次进入网站自动校验授权。</p></div>
+      <div class="auth-grid">
+        <div class="auth-state">
+          <div class="st-line"><span>当前状态</span><b id="aState" class="warn">未激活</b></div>
+          <div class="st-line"><span>激活码</span><b id="aCode">—</b></div>
+          <div class="st-line"><span>激活时间</span><b id="aAct">—</b></div>
+          <div class="st-line"><span>到期时间</span><b id="aExp">—</b></div>
+          <div class="st-line"><span>剩余时间</span><b id="aLeft" class="ok">—</b></div>
+          <div class="st-line"><span>本次校验</span><b id="aCheck">—</b></div>
+        </div>
+        <div class="auth-act">
+          <label>输入激活码</label>
+          <div class="act-row">
+            <input id="codeInput" placeholder="例如：FLUX-1234-5678-ABCD" spellcheck="false">
+            <button class="btn-solid" id="actBtn">立即激活</button>
+          </div>
+          <p class="hint">· 激活码格式：<b>FLUX-0000-0000-AAAA</b>（两段 4 位数字 + 一段 4 位大写字母），输入不区分大小写。<br>· <b>每个激活码仅限本机使用一次</b>，激活成功后立即绑定。<br>· 没有激活码？在右下角 <b>在线客服</b> 发送「激活码」自助领取 1 天体验码。</p>
+        </div>
       </div>
     </section>
-
-    <section class="section glass" id="cat5">
-      <div class="section-head"><h2>分类5</h2></div>
-      <div class="empty">
-        <div class="empty-icon"></div>
-        <p class="empty-text">目前分类无内容</p>
-      </div>
-    </section>
-
   </main>
+
+  <aside class="status">
+    <div class="sb-block">
+      <h4>LICENSE</h4>
+      <div class="lic warn" id="sLic"><span class="dot"></span><span id="sLicT">未激活（预览模式）</span></div>
+      <div class="lic-line">到期：<b id="sLicExp">—</b></div>
+    </div>
+    <div class="sb-block">
+      <h4>PROJECT</h4>
+      <div class="sess"><span>工程名</span><b>NEON PROTOCOL</b></div>
+      <div class="sess"><span>引擎</span><b>Unity 2022.3</b></div>
+      <div class="sess"><span>渲染管线</span><b>URP</b></div>
+      <div class="sess"><span>当前场景</span><b>RANGE_01</b></div>
+    </div>
+    <div class="sb-block">
+      <h4>SESSION</h4>
+      <div class="sess"><span>运行时长</span><b id="uptime2" class="wait">待激活</b></div>
+      <div class="sess"><span>已启用模块</span><b id="modCount">0</b></div>
+      <div class="sess"><span>调试项</span><b id="cfgCount">13</b></div>
+    </div>
+    <div class="sb-block tips">
+      <h4>TIPS</h4>
+      <p>未激活时为预览模式，仅可浏览视口；激活后调试功能解锁并启动稳定运行计时。所有参数仅作用于本地调试构建。</p>
+    </div>
+  </aside>
 </div>
 
+<footer class="footbar">
+  <span>开发交流群：<b>735 512 448</b></span><i>|</i>
+  <span>问题反馈请在群内 @管理</span>
+  <span class="grow"></span>
+  <span>当前模式 <b id="footMode" class="prev">预览模式</b></span><i>|</i>
+  <span>PING <b id="ping">23ms</b></span><i>|</i>
+  <span class="ok"><span class="dot"></span>服务正常</span><i>|</i>
+  <span>© 2026 NEON PROTOCOL DEV</span>
+</footer>
+
+<!-- 在线客服浮窗 -->
+<div class="chat" id="chat">
+  <div class="chat-h">
+    <div class="t"><span class="dot" id="svcDot"></span>在线客服<em>(8:00-20:00 · <span id="svcState">在线</span>)</em></div>
+    <div class="ops"><button id="chatClear">清空记录</button><button id="chatClose">关闭</button></div>
+  </div>
+  <div class="chat-b" id="chatBody"></div>
+  <div class="typing" id="typing">客服 正在输入<span>.</span><span>.</span><span>.</span></div>
+  <div class="chat-f">
+    <input id="chatInput" placeholder="描述你的问题，回车发送…" maxlength="200">
+    <button id="chatSend"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4 18-7z"/></svg></button>
+  </div>
+</div>
+
+<div class="toasts" id="toasts"></div>
+
+<script>
+/* ============ 基础工具 ============ */
+const $=s=>document.querySelector(s), $$=s=>document.querySelectorAll(s);
+const p2=n=>String(n).padStart(2,'0');
+const fmtDT=d=>`${d.getFullYear()}.${p2(d.getMonth()+1)}.${p2(d.getDate())} ${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
+const nowHM=()=>{const d=new Date();return `${p2(d.getHours())}:${p2(d.getMinutes())}`};
+function fmtRemain(ms){ms=Math.max(0,ms);const d=Math.floor(ms/864e5),h=Math.floor(ms%864e5/36e5),m=Math.floor(ms%36e5/6e4),s=Math.floor(ms%6e4/1e3);return (d?d+'天 ':'')+`${p2(h)}:${p2(m)}:${p2(s)}`}
+const inSvc=()=>{const h=new Date().getHours();return h>=8&&h<20};
+
+/* 安全存储 */
+const mem={};
+const store={
+  get(k){try{return localStorage.getItem(k)}catch(e){return (k in mem)?mem[k]:null}},
+  set(k,v){try{localStorage.setItem(k,v)}catch(e){mem[k]=v}},
+  del(k){try{localStorage.removeItem(k)}catch(e){delete mem[k]}}
+};
+const sess={
+  get(k){try{return sessionStorage.getItem(k)}catch(e){return (k in mem)?mem[k]:null}},
+  set(k,v){try{sessionStorage.setItem(k,v)}catch(e){mem[k]=v}},
+  del(k){try{sessionStorage.removeItem(k)}catch(e){delete mem[k]}}
+};
+
+function toast(msg,type='ok',src='CONFIG'){
+  const box=$('#toasts'); if(!box)return;
+  const t=document.createElement('div');
+  t.className='toast'+(type!=='ok'?' '+type:'');
+  t.innerHTML=`<em>${src}</em>${msg}`;
+  box.appendChild(t);
+  setTimeout(()=>{t.classList.add('out');t.addEventListener('animationend',()=>t.remove())},2600);
+}
+let errShown=0;
+window.addEventListener('error',e=>{ if(errShown++<3)toast('脚本错误：'+e.message,'err','DEBUG') });
+const safe=(label,fn)=>{try{fn()}catch(err){console.error('['+label+']',err);toast(label+' 初始化失败：'+err.message,'err','DEBUG')}};
+
+/* ============ 调试状态（全局共享） ============ */
+const fx={wallhack:false,esp:false,tracers:false,wire:false,hud:false,hitbox:false,nav:false,tscale:1,espColor:'#ff4655',espAlpha:.9,lw:1};
+const mv={high:false,ghost:false,dash:false,grav:1,spd:1};
+let capFps=120;
+
+/* ================================================================
+   授权数据与状态渲染（★ 全局作用域 —— 修复上一版 renderAuth 闭包隔离
+   导致的「脚本错误：renderAuth is not defined」）
+   ================================================================ */
+/* 激活码格式：FLUX-0000-0000-AAAA（两段4位数字 + 一段4位大写字母） */
+const CODE_RE=/^FLUX-\d{4}-\d{4}-[A-Z]{4}$/;
+const SPECIAL_CODES={'FLUX-7392-0481-KQXZ':7,'FLUX-2864-9157-TRBM':30}; // 长时码
+const DEFAULT_DAYS=3; // 任意符合格式的未使用码默认授权天数
+
+let lic=null; try{lic=JSON.parse(store.get('vcfg_lic'))}catch(e){}
+let used=[]; try{used=JSON.parse(store.get('vcfg_used'))||[]}catch(e){}
+let trial=null; try{trial=JSON.parse(store.get('vcfg_trial'))}catch(e){}
+const authOK=()=>!!(lic&&lic.exp>Date.now());
+const licExpired=()=>!!(lic&&lic.exp<=Date.now());
+
+function renderAuth(){
+  const ok=authOK(), expd=licExpired();
+  const st=$('#aState');
+  if(st){st.textContent=ok?'已授权 · 有效':(expd?'已过期':'未激活');st.className=ok?'ok':(expd?'bad':'warn')}
+  const code=$('#aCode'); if(code)code.textContent=lic?lic.code:'—';
+  const act=$('#aAct'); if(act)act.textContent=lic&&lic.actAt?fmtDT(new Date(lic.actAt)):'—';
+  const exp=$('#aExp'); if(exp)exp.textContent=lic?fmtDT(new Date(lic.exp)):'—';
+  const left=$('#aLeft');
+  if(left){left.textContent=ok?fmtRemain(lic.exp-Date.now()):(expd?'已到期':'—');left.className=ok?'ok':(expd?'bad':'warn')}
+  const s=$('#sLicT');
+  if(s){s.textContent=ok?'已授权 · 有效':(expd?'授权已过期':'未激活（预览模式）');
+    $('#sLic').className='lic '+(ok?'':(expd?'bad':'warn'))}
+  const se=$('#sLicExp'); if(se)se.textContent=lic?fmtDT(new Date(lic.exp)):'—';
+  const fm=$('#footMode');
+  if(fm){fm.textContent=ok?'已授权':'预览模式';fm.className=ok?'auth':'prev'}
+}
+
+/* ============ 稳定运行计时：激活后才开始 ============ */
+let t0=null;
+function syncTimer(){
+  if(authOK()){
+    const saved=+sess.get('vcfg_t0');
+    t0=saved||Date.now();
+    sess.set('vcfg_t0',String(t0));
+  }else{ t0=null; sess.del('vcfg_t0') }
+}
+setInterval(()=>{
+  const a=$('#uptime'), b=$('#uptime2'), d=$('#uptimeDot');
+  if(!authOK()||!t0){
+    const txt=licExpired()?'已过期':'待激活';
+    if(a){a.textContent=txt;a.style.color='var(--gold)'}
+    if(b){b.textContent=txt;b.className='wait'}
+    if(d)d.classList.add('locked');
+    return;
+  }
+  const s=Math.floor((Date.now()-t0)/1000);
+  const txt=`${p2(Math.floor(s/3600))}:${p2(Math.floor(s/60)%60)}:${p2(s%60)}`;
+  if(a){a.textContent=txt;a.style.color=''}
+  if(b){b.textContent=txt;b.className=''}
+  if(d)d.classList.remove('locked');
+  const left=$('#aLeft');
+  if(left&&authOK())left.textContent=fmtRemain(lic.exp-Date.now());
+},500);
+
+/* ============ 模块计数 ============ */
+function refreshCount(){
+  const m=$('#modCount');
+  if(m)m.textContent=authOK()?document.querySelectorAll('.sw.on').length:0;
+}
+
+/* ============ 通用开关 ============ */
+function bindSw(id,name,src,onFn,offFn){
+  const b=$(id); if(!b)return null;
+  b.addEventListener('click',()=>{
+    b.classList.toggle('on');
+    const on=b.classList.contains('on');
+    toast(`${name} ${on?'已开启':'已关闭'}`,on?'ok':'warn',src);
+    if(on){onFn&&onFn()}else{offFn&&offFn()}
+    refreshCount();
+  });
+  return b;
+}
+
+/* ============ 预览锁定系统 ============ */
+const LOCK_PANELS=['p-move','p-eco','p-vision','p-perf'];
+let lastLockToast=0;
+const RIBBON_HTML=`<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="5" y="10.5" width="14" height="9.5" rx="1.5"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><circle cx="12" cy="15" r="1.4" fill="currentColor" stroke="none"/></svg>
+ <b>预览模式</b><span>调试功能已锁定 · 输入激活码后解锁</span><button class="lock-go">前往激活</button>`;
+function applyLock(){
+  const locked=!authOK();
+  LOCK_PANELS.forEach(id=>{
+    const p=document.getElementById(id); if(!p)return;
+    p.classList.toggle('is-locked',locked);
+    let rb=p.querySelector('.lock-ribbon');
+    if(locked){
+      if(!rb){rb=document.createElement('div');rb.className='lock-ribbon';rb.innerHTML=RIBBON_HTML;p.prepend(rb)}
+      rb.style.display='flex';
+      p.querySelectorAll('button,input').forEach(el=>{if(!el.closest('.lock-ribbon'))el.disabled=true});
+    }else{
+      if(rb)rb.style.display='none';
+      p.querySelectorAll('button,input').forEach(el=>{el.disabled=false});
+    }
+    const nv=document.querySelector(`.nv[data-p="${id.replace('p-','')}"]`);
+    if(nv)nv.classList.toggle('locked',locked);
+  });
+  refreshCount();
+}
+LOCK_PANELS.forEach(id=>{
+  const p=document.getElementById(id); if(!p)return;
+  p.addEventListener('click',e=>{
+    if(authOK())return;
+    if(e.target.closest('.lock-ribbon'))return;
+    e.stopPropagation();
+    if(Date.now()-lastLockToast>1500){
+      lastLockToast=Date.now();
+      toast('当前为预览模式，请在「授权管理」输入激活码解锁','warn','AUTH');
+    }
+  },true);
+});
+document.addEventListener('click',e=>{
+  if(e.target.closest('.lock-go')){
+    const nv=document.querySelector('.nv[data-p="auth"]');
+    if(nv)nv.click();
+  }
+});
+
+/* ============ 侧栏导航 ============ */
+safe('导航切换',()=>{
+  $$('.nv').forEach(b=>b.addEventListener('click',()=>{
+    $$('.nv').forEach(x=>x.classList.remove('act'));
+    $$('.panel').forEach(x=>x.classList.remove('act'));
+    b.classList.add('act');
+    const p=$('#p-'+b.dataset.p); if(p)p.classList.add('act');
+  }));
+});
+
+/* ============ 移动调试面板 ============ */
+safe('移动调试',()=>{
+  bindSw('#swHigh','人物高跳','移动调试',()=>mv.high=true,()=>mv.high=false);
+  bindSw('#swGhost','幽灵模式','移动调试',()=>mv.ghost=true,()=>mv.ghost=false);
+  bindSw('#swDash','无限冲刺','移动调试',()=>mv.dash=true,()=>mv.dash=false);
+  const g=$('#rgGrav');
+  g.addEventListener('input',()=>{mv.grav=g.value/100;$('#vGrav').textContent=mv.grav.toFixed(2)});
+  g.addEventListener('change',()=>toast(`重力倍率 → ${mv.grav.toFixed(2)}`,'ok','移动调试'));
+  const s=$('#rgSpd');
+  s.addEventListener('input',()=>{mv.spd=s.value/100;$('#vSpd').textContent=mv.spd.toFixed(2)});
+  s.addEventListener('change',()=>toast(`移动速度倍率 → ${mv.spd.toFixed(2)}`,'ok','移动调试'));
+});
+
+/* ============ 资源调试面板 ============ */
+safe('资源调试',()=>{
+  bindSw('#swAmmo','无限子弹','资源调试');
+  bindSw('#swArmor','无限护甲','资源调试');
+  bindSw('#swOneShot','一击必杀','资源调试');
+  bindSw('#swNoCD','无限技能冷却','资源调试');
+  $('#moneyBtn').addEventListener('click',()=>{
+    const n=Number($('#moneyInput').value);
+    if(!Number.isFinite(n)||n<0){toast('请输入有效的金钱数值','err','资源调试');return}
+    toast(`金钱参数已写入 · 当前 <b>${Math.round(n)}</b>`,'ok','资源调试');
+  });
+});
+
+/* ============ 视觉调试面板 ============ */
+safe('视觉调试',()=>{
+  bindSw('#swWH','透视','视觉调试',()=>fx.wallhack=true,()=>fx.wallhack=false);
+  bindSw('#swESP','绘制','视觉调试',()=>fx.esp=true,()=>fx.esp=false);
+  bindSw('#swTracer','子弹轨迹','视觉调试',()=>fx.tracers=true,()=>fx.tracers=false);
+  bindSw('#swWire','模型线框','视觉调试',()=>fx.wire=true,()=>fx.wire=false);
+  const a=$('#rgEspA');
+  a.addEventListener('input',()=>{fx.espAlpha=a.value/100;$('#vEspA').textContent=a.value+'%'});
+  a.addEventListener('change',()=>toast(`绘制透明度 → ${a.value}%`,'ok','视觉调试'));
+  const w=$('#rgEspW');
+  w.addEventListener('input',()=>{fx.lw=+w.value;$('#vEspW').textContent=w.value});
+  w.addEventListener('change',()=>toast(`绘制线条宽度 → ${w.value}px`,'ok','视觉调试'));
+  $('#chipEsp').addEventListener('click',e=>{
+    const b=e.target.closest('.chip'); if(!b)return;
+    $$('#chipEsp .chip').forEach(x=>x.classList.remove('act')); b.classList.add('act');
+    fx.espColor=b.dataset.c;
+    toast(`绘制颜色已切换 · ${b.dataset.c.toUpperCase()}`,'ok','视觉调试');
+  });
+});
+
+/* ============ 性能调试面板 ============ */
+safe('性能调试',()=>{
+  bindSw('#swHud','调试 HUD','性能调试',()=>fx.hud=true,()=>fx.hud=false);
+  bindSw('#swHit','碰撞盒显示','性能调试',()=>fx.hitbox=true,()=>fx.hitbox=false);
+  bindSw('#swNav','导航网格显示','性能调试',()=>fx.nav=true,()=>fx.nav=false);
+  $('#segFps').addEventListener('click',e=>{
+    const b=e.target.closest('button'); if(!b||b.classList.contains('act'))return;
+    $$('#segFps button').forEach(x=>x.classList.remove('act')); b.classList.add('act');
+    capFps=+b.dataset.f;
+    const c=$('#vpCap'); if(c)c.textContent=capFps;
+    toast(`帧率上限已设为 <b>${capFps} FPS</b>`,'ok','性能调试');
+  });
+  const ts=$('#rgTS');
+  ts.addEventListener('input',()=>{fx.tscale=ts.value/100;$('#vTS').textContent=fx.tscale.toFixed(2)+'x'});
+  ts.addEventListener('change',()=>toast(`时间缩放 → ${fx.tscale.toFixed(2)}x`,'ok','性能调试'));
+});
+
+/* ============ 调试视口渲染引擎 ============ */
+safe('调试视口',()=>{
+  const vC=$('#vcVis'), vc=vC.getContext('2d');
+  const mC=$('#vcMove'), mc=mC.getContext('2d');
+  const walls=[
+    {x:240,y:0,w:24,h:128},{x:240,y:192,w:24,h:128},{x:430,y:64,w:24,h:192}
+  ];
+  const bots=[
+    {name:'BOT_RECON',bx:510,by:110,ax:0,ay:70,ph:0},
+    {name:'BOT_VANGUARD',bx:330,by:252,ax:-58,ay:0,ph:2.1},
+    {name:'BOT_SNIPER',bx:322,by:88,ax:58,ay:0,ph:4.2}
+  ];
+  const player={x:90,y:160};
+  const tracers=[];
+  function occluded(x1,y1,x2,y2){
+    for(let i=1;i<24;i++){
+      const px=x1+(x2-x1)*i/24, py=y1+(y2-y1)*i/24;
+      for(const w of walls)if(px>w.x&&px<w.x+w.w&&py>w.y&&py<w.y+w.h)return true;
+    }
+    return false;
+  }
+  function brackets(x,y,w,h){
+    const s=6;
+    vc.beginPath();
+    vc.moveTo(x,y+s);vc.lineTo(x,y);vc.lineTo(x+s,y);
+    vc.moveTo(x+w-s,y);vc.lineTo(x+w,y);vc.lineTo(x+w,y+s);
+    vc.moveTo(x+w,y+h-s);vc.lineTo(x+w,y+h);vc.lineTo(x+w-s,y+h);
+    vc.moveTo(x+s,y+h);vc.lineTo(x,y+h);vc.lineTo(x,y+h-s);
+    vc.stroke();
+  }
+  /* --- 视觉场景 --- */
+  function drawVision(simT,fps){
+    const W=640,H=320;
+    vc.clearRect(0,0,W,H);
+    vc.fillStyle='#0a1118';vc.fillRect(0,0,W,H);
+    vc.strokeStyle='rgba(236,232,225,.05)';vc.lineWidth=1;
+    for(let x=0;x<=W;x+=40){vc.beginPath();vc.moveTo(x,0);vc.lineTo(x,H);vc.stroke()}
+    for(let y=0;y<=H;y+=40){vc.beginPath();vc.moveTo(0,y);vc.lineTo(W,y);vc.stroke()}
+    if(fx.nav){
+      vc.fillStyle='rgba(62,207,154,.22)';
+      for(let x=20;x<W;x+=40)for(let y=20;y<H;y+=40){
+        let inWall=false;
+        for(const w of walls)if(x>w.x&&x<w.x+w.w&&y>w.y&&y<w.y+w.h)inWall=true;
+        if(!inWall)vc.fillRect(x-1.5,y-1.5,3,3);
+      }
+    }
+    walls.forEach(w=>{
+      vc.fillStyle='#101c27';vc.fillRect(w.x,w.y,w.w,w.h);
+      vc.strokeStyle='#22323f';vc.strokeRect(w.x+.5,w.y+.5,w.w-1,w.h-1);
+    });
+    const pts=bots.map(b=>({
+      b,
+      x:b.bx+b.ax*Math.sin(simT*.6+b.ph),
+      y:b.by+b.ay*Math.sin(simT*.6+b.ph)
+    }));
+    pts.forEach(p=>{p.vis=!occluded(player.x,player.y,p.x,p.y)});
+    if(fx.tracers&&Math.floor(simT*8)%9===0&&tracers.length<8){
+      const t=pts[Math.floor(Math.random()*pts.length)];
+      tracers.push({x2:t.x,y2:t.y,a:1});
+    }
+    pts.forEach(p=>{
+      if(!p.vis&&!fx.wallhack)return;
+      const through=fx.wallhack&&!p.vis;
+      vc.save();
+      if(fx.wallhack){vc.shadowColor=fx.espColor;vc.shadowBlur=through?12:4}
+      if(fx.wire){
+        vc.strokeStyle=through?'#ff4655':'#3ecf9a';vc.lineWidth=1.5;
+        vc.strokeRect(p.x-8,p.y-14,16,28);
+      }else{
+        vc.fillStyle=through?'rgba(255,70,85,.88)':'rgba(62,207,154,.92)';
+        vc.fillRect(p.x-8,p.y-14,16,28);
+      }
+      vc.restore();
+    });
+    /* 玩家 */
+    vc.save();
+    vc.shadowColor='#3ecf9a';vc.shadowBlur=8;
+    vc.fillStyle='#3ecf9a';
+    vc.beginPath();vc.arc(player.x,player.y,6,0,7);vc.fill();
+    vc.restore();
+    vc.strokeStyle='rgba(62,207,154,.4)';
+    vc.beginPath();vc.moveTo(player.x+8,player.y);vc.lineTo(player.x+22,player.y);vc.stroke();
+    /* 子弹轨迹 */
+    for(let i=tracers.length-1;i>=0;i--){
+      const t=tracers[i]; t.a-=.025;
+      if(t.a<=0){tracers.splice(i,1);continue}
+      vc.strokeStyle=fx.espColor; vc.globalAlpha=t.a*.8; vc.lineWidth=1;
+      vc.beginPath();vc.moveTo(player.x,player.y);vc.lineTo(t.x2,t.y2);vc.stroke();
+      vc.globalAlpha=1;
+    }
+    /* ESP 绘制层 */
+    if(fx.esp){
+      vc.globalAlpha=fx.espAlpha;
+      vc.strokeStyle=fx.espColor; vc.lineWidth=fx.lw;
+      pts.forEach(p=>{
+        brackets(p.x-13,p.y-22,26,44);
+        vc.setLineDash([4,4]);
+        vc.beginPath();vc.moveTo(player.x,player.y);vc.lineTo(p.x,p.y);vc.stroke();
+        vc.setLineDash([]);
+        const dist=Math.round(Math.hypot(p.x-player.x,p.y-player.y)/8);
+        vc.fillStyle=fx.espColor; vc.font='600 10px Rajdhani';
+        vc.fillText(`${p.b.name} · ${dist}m`,p.x-20,p.y-28);
+      });
+      vc.globalAlpha=1;
+    }
+    if(fx.hitbox){
+      vc.strokeStyle='rgba(62,207,154,.55)'; vc.lineWidth=1; vc.setLineDash([3,3]);
+      pts.forEach(p=>{ if(p.vis||fx.wallhack)vc.strokeRect(p.x-8,p.y-14,16,28) });
+      vc.strokeRect(player.x-6,player.y-6,12,12);
+      vc.setLineDash([]);
+    }
+    if(fx.hud){
+      vc.fillStyle='rgba(62,207,154,.9)'; vc.font='600 11px Rajdhani';
+      vc.fillText(`FPS ${Math.round(fps)}  CAP ${capFps}  ENTS ${bots.length+1}  TS ${fx.tscale.toFixed(2)}x`,12,20);
+      vc.fillStyle='rgba(236,232,225,.35)';
+      vc.fillText(`BUILD 0.9.5-dev · RANGE_01 · SIM ${simT.toFixed(1)}s`,12,36);
+    }
+  }
+  /* --- 移动场景 --- */
+  const mst={x:120,y:0,vy:0,dir:1,timer:60};
+  function stepMove(){
+    mst.x+=mst.dir*1.4*mv.spd;
+    if(mst.x<14){mst.x=14;mst.dir=1}
+    if(mst.x>626){mst.x=626;mst.dir=-1}
+    const px=mst.x-7;
+    if(!mv.ghost&&px<318&&px+14>298&&mst.y<42){mst.dir*=-1;mst.x+=mst.dir*5}
+    if(mst.y<=0&&mst.vy<=0){
+      mst.y=0;mst.vy=0;
+      if(--mst.timer<=0){mst.vy=mv.high?9.5:5.5;mst.timer=100}
+    }else{
+      mst.vy-=.35*mv.grav; mst.y+=mst.vy;
+      if(mst.y<=0){mst.y=0;mst.vy=0}
+    }
+  }
+  function drawMove(){
+    const W=640,H=150;
+    mc.clearRect(0,0,W,H);
+    mc.fillStyle='#0a1118';mc.fillRect(0,0,W,H);
+    mc.strokeStyle='rgba(236,232,225,.05)';
+    for(let x=0;x<=W;x+=40){mc.beginPath();mc.moveTo(x,0);mc.lineTo(x,H);mc.stroke()}
+    mc.strokeStyle='#22323f';mc.lineWidth=2;
+    mc.beginPath();mc.moveTo(0,127);mc.lineTo(W,127);mc.stroke();
+    mc.fillStyle='#101c27';mc.fillRect(298,84,20,43);
+    mc.strokeStyle='#22323f';mc.strokeRect(298.5,84.5,19,42);
+    if(mv.dash){
+      mc.strokeStyle='rgba(62,207,154,.35)';mc.lineWidth=1;
+      for(let i=1;i<=3;i++){
+        mc.beginPath();
+        mc.moveTo(mst.x-10-i*14,120-mst.y-i*3);
+        mc.lineTo(mst.x-26-i*14,120-mst.y-i*3);
+        mc.stroke();
+      }
+    }
+    const py=127-14-mst.y;
+    mc.save();
+    if(mv.ghost)mc.globalAlpha=.55;
+    mc.shadowColor='#3ecf9a';mc.shadowBlur=mv.ghost?4:8;
+    mc.fillStyle='#3ecf9a';
+    mc.fillRect(mst.x-7,py,14,14);
+    mc.restore();
+    if(mv.ghost){
+      mc.setLineDash([3,3]);mc.strokeStyle='rgba(62,207,154,.8)';
+      mc.strokeRect(mst.x-7.5,py-.5,15,15);mc.setLineDash([]);
+    }
+    let tag='';
+    if(mv.ghost)tag='NOCLIP'; else if(mv.high)tag='HIGH JUMP x3'; else if(mv.dash)tag='SPRINT';
+    if(tag){
+      mc.fillStyle='rgba(236,232,225,.55)';mc.font='600 9px Rajdhani';
+      mc.fillText(tag,mst.x-18,py-6);
+    }
+    $('#mvParam').textContent=`GRAV ${mv.grav.toFixed(2)} · SPD ${mv.spd.toFixed(2)}${mv.ghost?' · NOCLIP':''}`;
+  }
+  /* --- 主循环 --- */
+  let simT=0,fpsS=60,lastT=performance.now();
+  function loop(now){
+    const dt=Math.min((now-lastT)/1000,.05); lastT=now;
+    fpsS=fpsS*.95+(1/Math.max(dt,.001))*.05;
+    simT+=dt*fx.tscale;
+    stepMove(); drawMove(); drawVision(simT,fpsS);
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+});
+
+/* ============ 授权管理（FLUX 格式 + 一次性绑定 + 定期校验） ============ */
+safe('授权管理',()=>{
+  let wasAuthed=authOK();
+  function doActivate(){
+    const raw=$('#codeInput').value.trim().toUpperCase();
+    if(!raw){toast('请先输入激活码','warn','AUTH');return}
+    if(!CODE_RE.test(raw)){toast('激活码格式无效 · 正确格式：<b>FLUX-0000-0000-AAAA</b>（两段4位数字 + 一段4位大写字母）','err','AUTH');return}
+    if(used.includes(raw)){toast('该激活码已在本机使用过，无法重复激活','err','AUTH');return}
+    const trialValid=trial&&!trial.used&&trial.code===raw;
+    const days=SPECIAL_CODES[raw]||(trialValid?1:DEFAULT_DAYS);
+    const actAt=Date.now(), exp=actAt+days*864e5;
+    lic={code:raw,actAt,exp};
+    used.push(raw); store.set('vcfg_used',JSON.stringify(used));
+    if(trialValid){trial.used=true;store.set('vcfg_trial',JSON.stringify(trial))}
+    store.set('vcfg_lic',JSON.stringify(lic));
+    wasAuthed=true;
+    renderAuth(); syncTimer(); applyLock();
+    toast(`激活成功 · 激活时间 <b>${fmtDT(new Date(actAt))}</b> · 到期 <b>${fmtDT(new Date(exp))}</b>（${days} 天），调试功能已解锁`,'ok','AUTH');
+    $('#codeInput').value='';
+  }
+  $('#actBtn').addEventListener('click',doActivate);
+  $('#codeInput').addEventListener('keydown',e=>{if(e.key==='Enter')doActivate()});
+  /* 定期校验：到期自动回锁并停止计时 */
+  setInterval(()=>{
+    const ok=authOK();
+    const d=new Date();
+    const ck=$('#aCheck'); if(ck)ck.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
+    if(ok!==wasAuthed){
+      wasAuthed=ok; renderAuth(); syncTimer(); applyLock();
+      if(ok)toast('检测到有效授权 · 功能已解锁','ok','AUTH');
+      else toast(`授权已到期（${lic?fmtDT(new Date(lic.exp)):'—'}）· 已切回预览模式，计时停止`,'err','AUTH');
+    }else renderAuth();
+  },30000);
+  renderAuth();
+});
+
+/* ============ 进入网站自动校验（renderAuth 现为全局函数，不再报错） ============ */
+safe('启动校验',()=>{
+  setTimeout(()=>toast('正在校验授权…','warn','AUTH'),300);
+  setTimeout(()=>{
+    const d=new Date();
+    const el=$('#aCheck'); if(el)el.textContent=`${p2(d.getHours())}:${p2(d.getMinutes())}:${p2(d.getSeconds())}`;
+    renderAuth(); applyLock(); syncTimer(); refreshCount();
+    const msg=authOK()?'授权校验通过 · 调试功能已解锁':(licExpired()?'授权已过期，请重新获取激活码':'未检测到有效授权 · 当前为预览模式');
+    toast(msg,authOK()?'ok':'warn','AUTH');
+  },1500);
+});
+
+/* ============ 在线客服 ============ */
+safe('在线客服',()=>{
+  const chat=$('#chat'), chatBody=$('#chatBody'), CK='neon_chat';
+  let msgs=[]; try{msgs=JSON.parse(store.get(CK))||[]}catch(e){}
+  function saveChat(){store.set(CK,JSON.stringify(msgs))}
+  function renderMsg(m){
+    const d=document.createElement('div'); d.className='msg'+(m.who==='me'?' me':'');
+    const av=m.who==='me'
+      ?'<span class="av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.5"/><path d="M4.5 20a7.5 7.5 0 0 1 15 0"/></svg></span>'
+      :'<span class="av"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M4 13a8 8 0 0 1 16 0"/><rect x="2.5" y="13" width="4" height="6" rx="1.2"/><rect x="17.5" y="13" width="4" height="6" rx="1.2"/></svg></span>';
+    d.innerHTML=`${av}<div class="bub">${m.text}<time>${m.t}</time></div>`;
+    chatBody.appendChild(d); chatBody.scrollTop=chatBody.scrollHeight;
+  }
+  function welcome(){
+    return inSvc()
+      ?'您好，这里是《霓虹协议》开发组售后 ~ 激活、到期时间、调试参数等问题都可以直接问我，人工坐席服务时间 8:00-20:00。发送「激活码」可自助领取 1 天体验授权。'
+      :'您好，这里是《霓虹协议》售后（自助通道）。当前为<b>非服务时间</b>（8:00-20:00），留言会记录并在客服上线后回复；发送「激活码」可 24 小时自助领取 1 天体验授权。';
+  }
+  msgs.forEach(renderMsg);
+  if(!msgs.length){const w={who:'bot',text:welcome(),t:nowHM()};msgs.push(w);renderMsg(w);saveChat()}
+  function updSvc(){
+    const on=inSvc(), d=$('#svcDot'), s=$('#svcState');
+    if(d)d.classList.toggle('offsvc',!on);
+    if(s)s.textContent=on?'在线':'非服务时间';
+  }
+  updSvc(); setInterval(updSvc,60000);
+  /* 生成 FLUX-0000-0000-AAAA 格式的体验码 */
+  function genCode(){
+    const dg=()=>{let r='';for(let i=0;i<4;i++)r+=Math.floor(Math.random()*10);return r};
+    const lt=()=>{const s='ABCDEFGHJKLMNPQRSTUVWXYZ';let r='';for(let i=0;i<4;i++)r+=s[Math.floor(Math.random()*s.length)];return r};
+    return `FLUX-${dg()}-${dg()}-${lt()}`;
+  }
+  function handleTrial(){
+    if(trial&&trial.used)
+      return '您领取的体验码已在本机激活使用。<b>体验码仅限使用一次</b>，无法重复领取。如需继续使用，请加入开发交流群 735 512 448 联系管理获取正式激活码。';
+    if(trial&&!trial.used)
+      return `您此前已领取过体验码 <b>${trial.code}</b>（1 天，尚未使用），可直接前往「授权管理」输入激活，无需重复领取。`;
+    const code=genCode();
+    trial={code,used:false}; store.set('vcfg_trial',JSON.stringify(trial));
+    return `自助通道已为您发放体验激活码：<b>${code}</b>（1 天 · 仅限本机使用一次）。前往「授权管理」输入即可激活，激活后调试功能解锁、稳定运行计时同步启动。`;
+  }
+  function botReply(text){
+    const t=text.toLowerCase();
+    if(/激活|卡密|兑换|码/.test(t))return handleTrial();
+    if(!inSvc())
+      return '当前为非服务时间（每日 8:00-20:00），您的消息已记录，客服上线后将第一时间回复您。您也可以加入开发交流群 735 512 448 向群内管理咨询。';
+    if(/到期|过期|剩余|授权|时间/.test(t))
+      return authOK()
+        ?`查询到您的授权：${lic.code}，激活于 ${fmtDT(new Date(lic.actAt))}，到期时间 ${fmtDT(new Date(lic.exp))}，剩余 ${fmtRemain(lic.exp-Date.now())}。到期后将自动退回预览模式。`
+        :licExpired()
+          ?'您的授权已过期，请重新获取新的激活码（旧码已绑定本机，无法重复使用）。'
+          :'当前还未激活哦，发送「激活码」可以先领取 1 天体验授权。';
+    if(/崩溃|报错|引擎|unity|闪退/.test(t))
+      return '请附上 Editor 日志（保存到工程目录 Logs 下）与复现步骤，服务时间内的工程师会帮您排查；也可以先到交流群 735 512 448 发日志文件。';
+    if(/人工|转接/.test(t))
+      return '人工坐席服务时间为每天 8:00-20:00，服务时间内我会为您转接对应开发工程师；非服务时间请留言或到交流群咨询。';
+    if(/你好|在吗|您好|hi|hello|哈喽/.test(t))
+      return '在的在的 ~ 请讲，激活、调试参数、视口表现相关问题都可以问我。';
+    const pool=['收到，已为您记录该问题，会有工程师尽快跟进处理 ~','这个问题可以再具体描述一下吗？比如操作步骤或视口里的表现。','方便的话可以截图发到开发交流群 735 512 448，管理会第一时间响应。'];
+    return pool[Math.floor(Math.random()*pool.length)];
+  }
+  function sendMsg(){
+    const v=$('#chatInput').value.trim(); if(!v)return;
+    const m={who:'me',text:v.replace(/</g,'&lt;'),t:nowHM()};
+    msgs.push(m);renderMsg(m);saveChat();$('#chatInput').value='';
+    setTimeout(()=>{
+      $('#typing').classList.add('on');
+      setTimeout(()=>{
+        $('#typing').classList.remove('on');
+        const r={who:'bot',text:botReply(v),t:nowHM()};
+        msgs.push(r);renderMsg(r);saveChat();
+      },900+Math.random()*1100);
+    },350);
+  }
+  $('#chatSend').addEventListener('click',sendMsg);
+  $('#chatInput').addEventListener('keydown',e=>{if(e.key==='Enter')sendMsg()});
+  $('#csBtn').addEventListener('click',()=>{
+    chat.classList.toggle('open');
+    updSvc();
+    if(chat.classList.contains('open')){chatBody.scrollTop=chatBody.scrollHeight;$('#chatInput').focus()}
+  });
+  $('#chatClose').addEventListener('click',()=>chat.classList.remove('open'));
+  $('#chatClear').addEventListener('click',()=>{
+    msgs=[];store.del(CK);chatBody.innerHTML='';
+    const w={who:'bot',text:'聊天记录已清空。'+welcome(),t:nowHM()};
+    msgs.push(w);renderMsg(w);saveChat();
+    toast('聊天记录已清空','warn','在线客服');
+  });
+});
+
+/* ============ 状态模拟（CPU/GPU 已按需求移除，仅保留 PING） ============ */
+safe('状态模拟',()=>{
+  setInterval(()=>{const p=$('#ping');if(p)p.textContent=(18+Math.floor(Math.random()*14))+'ms'},3000);
+});
+
+/* ============ 初始化 ============ */
+applyLock();
+syncTimer();
+refreshCount();
+</script>
 </body>
 </html>
