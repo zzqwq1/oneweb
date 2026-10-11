@@ -238,7 +238,7 @@ canvas.viewport{display:block;width:100%}
     <div class="logo"><b>F</b></div>
     <div class="brand-t"><b>FLUX</b><span>DEV · v0.9.6</span></div>
   </div>
-  <div class="tb-title">FLUX · 网站控制台 · IOS适配<i>FLUX · WEB CONSOLE</i></div>
+  <div class="tb-title">FLUX · 网站控制台<i>FLUX · WEB CONSOLE</i></div>
   <div class="tb-right">
     <div class="uptime"><span class="dot" id="uptimeDot"></span><span id="uptimeLabel">稳定运行</span> <b id="uptime">待激活</b></div>
     <button class="btn-ghost" id="csBtn">
@@ -271,14 +271,14 @@ canvas.viewport{display:block;width:100%}
   <main>
     <!-- 移动调试 -->
     <section class="panel act" id="p-move">
-      <div class="p-head"><h2>移动调试<span>MOVEMENT DEBUG</span></h2><p></p></div>
+      <div class="p-head"><h2>移动调试<span>MOVEMENT DEBUG</span></h2><p>角色机动参数调试视口：跳跃与穿墙效果实时演示，参数仅在开发构建中生效。</p></div>
       <div class="lab">
         <div>
           <div class="viewport-wrap">
             <canvas class="viewport" id="vcMove" width="640" height="150"></canvas>
             <div class="vp-bar"><span>SANDBOX_01 · CHARACTER</span><span id="mvParam">GRAV 1.00 · SPD 1.00</span></div>
           </div>
-          <p class="stage-tip"></p>
+          <p class="stage-tip">演示角色自动循环跳跃与往返移动，用于验证调试参数的手感表现。</p>
         </div>
         <div class="sens-box">
           <div class="row"><label>人物高跳<span class="sub">跳跃高度提升约 3 倍</span></label><button class="sw" id="swHigh"></button></div>
@@ -312,7 +312,7 @@ canvas.viewport{display:block;width:100%}
             <button data-part="head" class="act">头部</button><button data-part="body">身体</button><button data-part="random">随机</button>
           </div></div>
       </div>
-      <p class="note">外挂是工具，作弊是手段，演戏是智慧</p>
+      <p class="note">以上参数只作用于本地调试构建，写入后立即生效并伴随系统提示，方便对照数值策划案验证。</p>
     </section>
 
     <!-- 绘制透视 -->
@@ -382,7 +382,7 @@ canvas.viewport{display:block;width:100%}
     </div>
     <div class="sb-block tips">
       <h4>TIPS</h4>
-      <p>未激活时为预览模式，仅可浏览视口；激活后调试功能解锁并启动稳定运行计时。</p>
+      <p>未激活时为预览模式，仅可浏览视口；激活后调试功能解锁并启动稳定运行计时。所有参数仅作用于本地调试构建。</p>
     </div>
   </aside>
 </div>
