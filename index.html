@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的工具箱</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+
+  body {
+    min-height: 100vh;
+    font-family: "PingFang SC", "Microsoft YaHei", "Segoe UI", sans-serif;
+    background: #0b0d16;
+    color: #e8eaf2;
+    overflow-x: hidden;
+  }
+
+  /* ===== 背景灯效光斑 ===== */
+  .glow {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(100px);
+    opacity: .45;
+    pointer-events: none;
+    z-index: 0;
+  }
+  .glow-1 { width: 420px; height: 420px; background: #6a5cff; top: -120px; left: -100px; animation: drift1 16s ease-in-out infinite; }
+  .glow-2 { width: 380px; height: 380px; background: #ff5c8a; bottom: -110px; right: -80px; animation: drift2 20s ease-in-out infinite; }
+  .glow-3 { width: 300px; height: 300px; background: #2dd4bf; top: 38%; left: 58%; opacity: .28; animation: drift3 18s ease-in-out infinite; }
+  @keyframes drift1 { 50% { transform: translate(70px, 55px) scale(1.12); } }
+  @keyframes drift2 { 50% { transform: translate(-60px, -50px) scale(1.08); } }
+  @keyframes drift3 { 50% { transform: translate(-45px, 40px); } }
+
+  /* ===== 布局 ===== */
+  .app {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    gap: 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+    padding: 40px 24px;
+    align-items: flex-start;
+  }
+
+  .glass {
+    background: rgba(255, 255, 255, 0.06);
+    backdrop-filter: blur(22px);
+    -webkit-backdrop-filter: blur(22px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+  }
+
+  /* ===== 侧边栏 ===== */
+  .sidebar {
+    width: 250px;
+    flex-shrink: 0;
+    padding: 26px 18px;
+    position: sticky;
+    top: 40px;
+    overflow: hidden;
+  }
+  /* 侧边灯带 */
+  .sidebar::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 18%;
+    bottom: 18%;
+    width: 3px;
+    background: linear-gradient(180deg, transparent, #6a5cff, #ff5c8a, transparent);
+    filter: blur(1px);
+    box-shadow: 0 0 14px rgba(122, 108, 255, .9);
+  }
+  .sidebar::after {
+    content: "";
+    position: absolute;
+    left: -1px;
+    width: 5px;
+    height: 90px;
+    border-radius: 5px;
+    background: linear-gradient(180deg, transparent, rgba(255,255,255,.95), transparent);
+    filter: blur(1.5px);
+    animation: lampRun 3.6s linear infinite;
+  }
+  @keyframes lampRun { from { top: -90px; } to { top: 100%; } }
+
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 26px;
+    padding-left: 8px;
+  }
+  .brand-dot {
+    width: 12px; height: 12px;
+    border-radius: 50%;
+    background: #8b7dff;
+    box-shadow: 0 0 10px #8b7dff, 0 0 22px rgba(139,125,255,.7);
+    animation: pulse 2.4s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { box-shadow: 0 0 4px #8b7dff, 0 0 10px rgba(139,125,255,.4); } }
+  .brand h1 { font-size: 1.1rem; font-weight: 600; letter-spacing: .05em; }
+
+  nav { display: flex; flex-direction: column; gap: 6px; }
+  .nav-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 14px;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: rgba(232,234,242,.65);
+    font-size: .95rem;
+    text-decoration: none;
+    transition: all .25s;
+  }
+  .nav-item:hover { background: rgba(255,255,255,.07); color: #fff; }
+  .nav-item .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.18);
+    transition: all .25s;
+    flex-shrink: 0;
+  }
+  .nav-item:hover .dot { background: #8b7dff; box-shadow: 0 0 10px #8b7dff; }
+  .nav-item .count {
+    margin-left: auto;
+    font-size: .72rem;
+    color: rgba(232,234,242,.4);
+  }
+
+  /* ===== 分类区块 ===== */
+  .main { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 22px; }
+
+  .section {
+    padding: 30px 34px 34px;
+    position: relative;
+    overflow: hidden;
+    scroll-margin-top: 24px;
+  }
+  .section::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 12%;
+    right: 12%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, rgba(139,125,255,.9), rgba(255,92,138,.9), transparent);
+    box-shadow: 0 0 12px rgba(139,125,255,.5);
+  }
+  .section-head h2 { font-size: 1.35rem; font-weight: 700; }
+  .section-head p { margin-top: 5px; font-size: .82rem; color: rgba(232,234,242,.5); }
+
+  /* 工具卡片 */
+  .tool-card {
+    margin-top: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 18px;
+    padding: 20px 22px;
+    background: rgba(255,255,255,.05);
+    border: 1px solid rgba(255,255,255,.1);
+    border-radius: 14px;
+    transition: all .25s;
+  }
+  .tool-card:hover {
+    border-color: rgba(139,125,255,.45);
+    box-shadow: 0 4px 24px rgba(139,125,255,.12);
+  }
+  .tool-info h3 { font-size: 1.05rem; font-weight: 600; }
+  .tool-info p { margin-top: 4px; font-size: .82rem; color: rgba(232,234,242,.5); }
+
+  /* sfz 按钮：纯 HTML 下载链接 */
+  .btn-sfz {
+    display: inline-block;
+    padding: 11px 26px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    background: linear-gradient(135deg, #6a5cff, #ff5c8a);
+    color: #fff;
+    font-size: .95rem;
+    font-weight: 600;
+    font-family: inherit;
+    text-decoration: none;
+    box-shadow: 0 4px 18px rgba(106,92,255,.4);
+    transition: all .25s;
+    white-space: nowrap;
+  }
+  .btn-sfz:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 28px rgba(255,92,138,.55);
+  }
+  .btn-sfz:active { transform: translateY(0); }
+
+  /* 空分类提示 */
+  .empty { padding: 46px 0 36px; text-align: center; }
+  .empty-icon {
+    width: 64px; height: 64px;
+    margin: 0 auto 18px;
+    border-radius: 50%;
+    border: 2px dashed rgba(255,255,255,.22);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .empty-icon::after {
+    content: "";
+    width: 10px; height: 10px;
+    border-radius: 50%;
+    background: rgba(255,255,255,.35);
+    box-shadow: 0 0 14px rgba(139,125,255,.9);
+  }
+  .empty-text {
+    font-size: .95rem;
+    color: rgba(232,234,242,.45);
+    letter-spacing: .1em;
+  }
+
+  /* ===== 移动端 ===== */
+  @media (max-width: 768px) {
+    .app { flex-direction: column; padding: 20px 14px; gap: 16px; }
+    .sidebar { width: 100%; position: static; padding: 18px 14px; }
+    .brand { margin-bottom: 14px; }
+    nav { flex-direction: row; overflow-x: auto; gap: 8px; padding-bottom: 4px; }
+    .nav-item { white-space: nowrap; padding: 9px 14px; }
+    .nav-item .count { display: none; }
+    .section { padding: 24px 20px 28px; }
+  }
+</style>
+</head>
+<body>
+
+<div class="glow glow-1"></div>
+<div class="glow glow-2"></div>
+<div class="glow glow-3"></div>
+
+<div class="app">
+  <!-- 侧边栏 -->
+  <aside class="sidebar glass">
+    <div class="brand">
+      <span class="brand-dot"></span>
+      <h1>我的工具箱</h1>
+    </div>
+    <nav>
+      <a class="nav-item" href="#cat1"><span class="dot"></span><span>分类1</span><span class="count">1 项</span></a>
+      <a class="nav-item" href="#cat2"><span class="dot"></span><span>分类2</span><span class="count">空</span></a>
+      <a class="nav-item" href="#cat3"><span class="dot"></span><span>分类3</span><span class="count">空</span></a>
+      <a class="nav-item" href="#cat4"><span class="dot"></span><span>分类4</span><span class="count">空</span></a>
+      <a class="nav-item" href="#cat5"><span class="dot"></span><span>分类5</span><span class="count">空</span></a>
+    </nav>
+  </aside>
+
+  <!-- 五个分类，静态排列 -->
+  <main class="main">
+
+    <section class="section glass" id="cat1">
+      <div class="section-head">
+        <h2>分类1</h2>
+        <p>共 1 项工具</p>
+      </div>
+      <div class="tool-card">
+        <div class="tool-info">
+          <h3>sfz</h3>
+          <p>点击按钮下载 sfz.txt 文件</p>
+        </div>
+        <a class="btn-sfz" href="data:text/plain;charset=utf-8;base64,c2Z6" download="sfz.txt">下载 TXT</a>
+      </div>
+    </section>
+
+    <section class="section glass" id="cat2">
+      <div class="section-head"><h2>分类2</h2></div>
+      <div class="empty">
+        <div class="empty-icon"></div>
+        <p class="empty-text">目前分类无内容</p>
+      </div>
+    </section>
+
+    <section class="section glass" id="cat3">
+      <div class="section-head"><h2>分类3</h2></div>
+      <div class="empty">
+        <div class="empty-icon"></div>
+        <p class="empty-text">目前分类无内容</p>
+      </div>
+    </section>
+
+    <section class="section glass" id="cat4">
+      <div class="section-head"><h2>分类4</h2></div>
+      <div class="empty">
+        <div class="empty-icon"></div>
+        <p class="empty-text">目前分类无内容</p>
+      </div>
+    </section>
+
+    <section class="section glass" id="cat5">
+      <div class="section-head"><h2>分类5</h2></div>
+      <div class="empty">
+        <div class="empty-icon"></div>
+        <p class="empty-text">目前分类无内容</p>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+</body>
+</html>
