@@ -606,7 +606,7 @@ function devFP(){
   const f=[navigator.userAgent,plat,sw+'x'+sh+'x'+(screen.colorDepth||24),'FLUXDEV'].join('#');
   let h1=5381,h2=52711;
   for(const ch of f){h1=(Math.imul(h1,33)^ch.charCodeAt(0))>>>0;h2=(Math.imul(h2,31)+ch.charCodeAt(0))>>>0}
-  const enc=n=>{const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<4;i++){s+=A[n%32];n=Math.floor(n/32)}return s};
+  const enc=n=>{const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<4;i++){s+=A[n%31];n=Math.floor(n/31)}return s};
   return enc(h1)+'-'+enc(h2);
 }
 function hmacSign(payload){
