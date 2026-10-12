@@ -164,8 +164,8 @@ canvas.viewport{display:block;width:100%}
 .st-line b.warn{color:var(--gold)} .st-line b.ok{color:var(--teal)} .st-line b.bad{color:var(--red)}
 .auth-act{border:1px solid var(--line);background:rgba(255,255,255,.014);padding:22px;display:flex;flex-direction:column;gap:12px}
 .auth-act label{font-size:12px;color:var(--dim);letter-spacing:1px}
-.act-row{display:flex;gap:10px}
-.act-row input{flex:1;padding:11px 13px;background:#0c141c;border:1px solid var(--line2);color:var(--ink);
+.act-row{display:flex;gap:10px;flex-wrap:wrap}
+.act-row input{flex:1;min-width:180px;padding:11px 13px;background:#0c141c;border:1px solid var(--line2);color:var(--ink);
  font:600 14px var(--f-num);letter-spacing:1px;outline:none;transition:.2s}
 .act-row input:focus{border-color:var(--red);box-shadow:0 0 10px rgba(255,70,85,.2)}
 .hint{font-size:11px;color:var(--dim2);line-height:1.7}
@@ -190,7 +190,7 @@ canvas.viewport{display:block;width:100%}
 .footbar .ok{display:flex;align-items:center;gap:6px;color:var(--teal)}
 #footMode{font-weight:600;letter-spacing:1px}
 #footMode.prev{color:var(--gold)} #footMode.auth{color:var(--teal)}
-.toasts{position:fixed;top:66px;right:18px;z-index:99;display:flex;flex-direction:column;gap:8px;pointer-events:none}
+.toasts{position:fixed;top:66px;right:18px;z-index:99;display:flex;flex-direction:column;gap:8px;pointer-events:none;max-width:90vw}
 .toast{min-width:250px;max-width:340px;background:#141f2b;border:1px solid var(--line2);border-left:3px solid var(--teal);
  padding:10px 14px;font-size:12.5px;line-height:1.5;box-shadow:0 10px 28px rgba(0,0,0,.5);animation:tin .3s ease}
 .toast em{display:block;font:600 10px var(--f-en);font-style:normal;letter-spacing:2px;color:var(--dim2);margin-bottom:2px}
@@ -217,7 +217,7 @@ canvas.viewport{display:block;width:100%}
 .av{width:30px;height:30px;flex:none;border-radius:50%;background:#1c2a38;display:grid;place-items:center;color:var(--teal)}
 .av svg{width:15px;height:15px}
 .msg.me .av{background:rgba(255,70,85,.16);color:var(--red)}
-.bub{max-width:72%;padding:9px 13px;font-size:13px;line-height:1.6;background:#18242f;border:1px solid var(--line)}
+.bub{max-width:72%;padding:9px 13px;font-size:13px;line-height:1.6;background:#18242f;border:1px solid var(--line);word-break:break-all}
 .msg.me .bub{background:rgba(255,70,85,.12);border-color:rgba(255,70,85,.28)}
 .bub time{display:block;font:600 10px var(--f-num);color:var(--dim2);margin-top:5px}
 .msg.me .bub time{text-align:right}
@@ -237,10 +237,14 @@ canvas.viewport{display:block;width:100%}
  .sidenav{width:54px}.nv span{display:none}.nv-foot{display:none}
  .tb-title{display:none}.lab,.auth-grid{grid-template-columns:1fr}
  .nv.locked::after,.nv.off::after{right:10px}
+ .panel{padding:18px 14px}
  .rd-stage{height:240px}
  .rd-center,.rd-cross{width:380px;height:380px}
  .rd-center i:nth-child(4){width:360px;height:360px}
  .rd-sweep{width:360px;height:360px}
+ .chat{right:10px;left:10px;width:auto;bottom:44px}
+ .toasts{left:14px;right:14px}
+ .toast{max-width:none}
 }
 </style>
 </head>
@@ -251,7 +255,7 @@ canvas.viewport{display:block;width:100%}
 <header class="topbar">
   <div class="brand">
     <div class="logo"><b>F</b></div>
-    <div class="brand-t"><b>FLUX</b><span>DEV · v0.0.3</span></div>
+    <div class="brand-t"><b>FLUX</b><span>DEV · v0.0.5</span></div>
   </div>
   <div class="tb-title">FLUX · 网站控制台<i>FLUX · WEB CONSOLE</i></div>
   <div class="tb-right">
@@ -277,13 +281,13 @@ canvas.viewport{display:block;width:100%}
     <button class="nv off" data-p="perf">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 18a8 8 0 1 1 16 0"/><path d="M12 18l4-6"/><path d="M2.5 18h19"/></svg>
       <span>性能调试</span></button>
-    <button class="nv act" data-p="radar">
+    <button class="nv" data-p="radar">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12l6-6.5"/><circle cx="12" cy="12" r="1" fill="currentColor" stroke="none"/></svg>
       <span>网页雷达</span></button>
-    <button class="nv" data-p="auth">
+    <button class="nv act" data-p="auth">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7"><circle cx="8" cy="14" r="4"/><path d="M11 11l8-8M16 6l2.5 2.5M13.5 8.5L16 11"/></svg>
       <span>授权管理</span></button>
-    <div class="nv-foot">DEV BUILD<br>v0.0.3</div>
+    <div class="nv-foot">DEV BUILD<br>v0.0.5</div>
   </nav>
 
   <main>
@@ -352,7 +356,7 @@ canvas.viewport{display:block;width:100%}
       </div>
     </section>
 
-    <section class="panel act" id="p-radar">
+    <section class="panel" id="p-radar">
       <div class="p-head"><h2>网页雷达<span>WEB RADAR</span></h2><p>实时战场雷达视图，输入主机端提供的房间码即可连接对应对局。此模块需要有效授权。</p></div>
       <div class="lab">
         <div>
@@ -399,10 +403,11 @@ canvas.viewport{display:block;width:100%}
       </div>
     </section>
 
-    <section class="panel" id="p-auth">
-      <div class="p-head"><h2>授权管理<span>LICENSE</span></h2><p>卡密在线库验证 · 多卡叠加计时 · 被吊销的卡密将自动从授权中扣除。</p></div>
+    <section class="panel act" id="p-auth">
+      <div class="p-head"><h2>授权管理<span>LICENSE</span></h2><p>一机一卡绑定 · 多卡叠加计时 · 被吊销的卡密将自动从授权中扣除。支持电脑 / 安卓 / iOS。</p></div>
       <div class="auth-grid">
         <div class="auth-state">
+          <div class="st-line"><span>本机设备码</span><b id="aFp" class="warn">—</b></div>
           <div class="st-line"><span>当前状态</span><b id="aState" class="warn">未激活</b></div>
           <div class="st-line"><span>已激活卡密</span><b id="aCode">—</b></div>
           <div class="st-line"><span>叠加卡数</span><b id="aCount">0</b></div>
@@ -413,12 +418,17 @@ canvas.viewport{display:block;width:100%}
           <div class="st-line"><span>本次校验</span><b id="aCheck">—</b></div>
         </div>
         <div class="auth-act">
-          <label>输入激活码（同一卡密不可重复叠加）</label>
+          <label>第 1 步 · 复制本机设备码发给管理员（领取绑定此设备的专属卡密）</label>
           <div class="act-row">
-            <input id="codeInput" placeholder="例如：FLUX-0030-6789-ABCD" spellcheck="false">
+            <input id="fpBox" readonly>
+            <button class="btn-line" id="fpCopy">复制设备码</button>
+          </div>
+          <label>第 2 步 · 输入管理员发给你的激活码（同一卡密不可重复叠加）</label>
+          <div class="act-row">
+            <input id="codeInput" placeholder="例如：FLUX-0030-6789-ABCD" spellcheck="false" autocapitalize="characters">
             <button class="btn-solid" id="actBtn">叠加激活</button>
           </div>
-          <p class="hint">· 激活码格式：<b>FLUX-0000-0000-AAAA</b>，末段为校验位。<br>· <b>多卡叠加</b>：已有授权时激活新卡密，剩余时间自动累加，不会重置。<br>· 授权天数 <b>1-9999 天</b>或永久卡，以在线卡密库（cards.json）记录为准。<br>· <b>在线吊销</b>：管理员删除某张卡后，本机授权会在下次校验（约 5 分钟内）自动扣除该卡对应时间。<br>· 卡密请联系开发者获取（管理工具签发）。</p>
+          <p class="hint">· <b>一机一卡</b>：每张卡密发卡时与设备码绑定，仅绑定的设备可用，转发卡密给他人无效。<br>· <b>多卡叠加</b>：续费时激活新卡密，剩余时间自动累加，不会重置。<br>· 授权天数 1-9999 天或永久卡；被吊销的卡约 5 分钟内自动扣除。<br>· 请固定使用同一浏览器访问本站（电脑 / 安卓 / iOS 均支持）；清除浏览数据不影响设备码。</p>
         </div>
       </div>
     </section>
@@ -433,7 +443,7 @@ canvas.viewport{display:block;width:100%}
     <div class="sb-block">
       <h4>PROJECT</h4>
       <div class="sess"><span>工程名</span><b>FLUX</b></div>
-      <div class="sess"><span>版本</span><b>v0.0.3</b></div>
+      <div class="sess"><span>版本</span><b>v0.0.5</b></div>
       <div class="sess"><span>引擎</span><b>Unity 2022.3</b></div>
       <div class="sess"><span>当前场景</span><b>RANGE_01</b></div>
     </div>
@@ -457,7 +467,7 @@ canvas.viewport{display:block;width:100%}
   <span>当前模式 <b id="footMode" class="prev">预览模式</b></span><i>|</i>
   <span>PING <b id="ping">23ms</b></span><i>|</i>
   <span class="ok"><span class="dot"></span>服务正常</span><i>|</i>
-  <span>© 2026 FLUX DEV · v0.0.3</span>
+  <span>© 2026 FLUX DEV · v0.0.5</span>
 </footer>
 
 <div class="chat" id="chat">
@@ -510,6 +520,19 @@ function toast(msg,type='ok',src='CONFIG'){
 let errShown=0;
 window.addEventListener('error',e=>{ if(errShown++<3)toast('脚本错误：'+e.message,'err','DEBUG') });
 const safe=(label,fn)=>{try{fn()}catch(err){console.error('['+label+']',err);toast(label+' 初始化失败：'+err.message,'err','DEBUG')}};
+/* 复制兼容：桌面 / 安卓 / iOS Safari */
+function copyText(t){
+  const fallback=()=>{
+    const i=document.createElement('textarea');
+    i.value=t;i.style.position='fixed';i.style.opacity='0';
+    document.body.appendChild(i);i.focus();i.select();
+    try{document.execCommand('copy')}catch(e){}
+    i.remove();
+  };
+  if(navigator.clipboard&&navigator.clipboard.writeText){
+    navigator.clipboard.writeText(t).catch(fallback);
+  }else fallback();
+}
 
 const fx={wallhack:false,esp:false,tracers:false,wire:false,btrack:false,heal:false,aoe:false,espColor:'#ff4655',espAlpha:.9,lw:1};
 const mv={high:false,ghost:false,grav:1,spd:1};
@@ -556,7 +579,10 @@ async function loadCardDB(){
     let arr=null;
     if(j.v===2&&j.data){arr=decCards(j.data);if(!Array.isArray(arr))throw new Error('bad')}
     else arr=Array.isArray(j)?j:(j.cards||[]);
-    cardDB={cards:(arr||[]).filter(c=>c&&c.code&&c.days>=0).map(c=>({code:String(c.code).toUpperCase(),days:+c.days}))};
+    cardDB={cards:(arr||[]).filter(c=>c&&c.code&&c.days>=0).map(c=>({
+      code:String(c.code).toUpperCase(),days:+c.days,
+      ...(c.bind?{bind:String(c.bind).toUpperCase()}:{})
+    }))};
     cardDBState='ok';
     if(el){el.textContent=`在线 · ${cardDB.cards.length} 个卡密`;el.className='ok'}
   }catch(err){
@@ -569,27 +595,30 @@ function dbLookup(code){
   return cardDB.cards.find(c=>c.code===code)||null;
 }
 
-/* ============ 授权数据（多卡叠加 + HMAC 签名 + 设备绑定） ============ */
+/* ============ 设备码（电脑 / 安卓 / iOS 通用，确定性生成） ============
+   特征：UA + 平台 + 屏幕尺寸（横竖屏归一化）+ 色深。
+   特点：清除浏览数据后不变；手机旋转屏幕不变；页面缩放不影响。
+   注意：浏览器大版本更新（如 iOS 系统升级）可能变化，届时重新领卡即可。 */
 function devFP(){
-  const c=store.get('vcfg_fp');
-  if(c)return c;
-  const f=[navigator.userAgent,(screen.width*screen.height)+'',new Date().getTimezoneOffset(),'','FLUX'].join('#');
-  let h=5381;
-  for(const ch of f)h=(Math.imul(h,33)^ch.charCodeAt(0))>>>0;
-  const v=('F'+(h>>>0).toString(36)).slice(0,12);
-  store.set('vcfg_fp',v);
-  return v;
+  const sw=Math.max(screen.width,screen.height);
+  const sh=Math.min(screen.width,screen.height);
+  const plat=(navigator.userAgentData&&navigator.userAgentData.platform)||navigator.platform||'';
+  const f=[navigator.userAgent,plat,sw+'x'+sh+'x'+(screen.colorDepth||24),'FLUXDEV'].join('#');
+  let h1=5381,h2=52711;
+  for(const ch of f){h1=(Math.imul(h1,33)^ch.charCodeAt(0))>>>0;h2=(Math.imul(h2,31)+ch.charCodeAt(0))>>>0}
+  const enc=n=>{const A='ABCDEFGHJKMNPQRSTUVWXYZ23456789';let s='';for(let i=0;i<4;i++){s+=A[n%32];n=Math.floor(n/32)}return s};
+  return enc(h1)+'-'+enc(h2);
 }
 function hmacSign(payload){
-  const dev=devFP();
   let h=2166136261;
-  const seed=KEY_PARTS.slice(1).join('~')+'|'+dev+'|'+payload;
+  const seed=KEY_PARTS.slice(1).join('~')+'|'+devFP()+'|'+payload;
   for(const c of seed){h^=c.charCodeAt(0);h=Math.imul(h,16777619)>>>0}
   let out='';
   for(let i=0;i<6;i++){h=(Math.imul(h,48271)+7)>>>0;out+=(h%36).toString(36)}
   return out;
 }
-/* activated: [{code, actAt, days}]  days=0 → 永久 */
+
+/* ============ 授权数据（多卡叠加 + HMAC 签名 + 设备绑定） ============ */
 let activated=[];
 function remainOf(arr){
   const now=Date.now();let sum=0;
@@ -619,7 +648,7 @@ function renderAuth(){
   const st=$('#aState');
   if(st){st.textContent=ok?'已授权 · 有效':(expd?'已过期':'未激活');st.className=ok?'ok':(expd?'bad':'warn')}
   const code=$('#aCode');
-  if(code)code.textContent=activated.length?activated.map(a=>a.code).join('  '):'—';
+  if(code)code.textContent=activated.length?activated.map(a=>a.code).join('　'):'—';
   const cnt=$('#aCount'); if(cnt)cnt.textContent=activated.length;
   const act=$('#aAct');
   if(act)act.textContent=activated.length?fmtDT(new Date(Math.min(...activated.map(a=>a.actAt)))):'—';
@@ -1027,7 +1056,7 @@ safe('调试视口',()=>{
   requestAnimationFrame(loop);
 });
 
-/* ============ 授权管理（叠加激活） ============ */
+/* ============ 授权管理（绑定校验 + 叠加激活） ============ */
 safe('授权管理',()=>{
   let wasAuthed=authOK();
   async function doActivate(){
@@ -1043,8 +1072,12 @@ safe('授权管理',()=>{
     }
     const rec=dbLookup(raw);
     if(!rec){
-      if(cardDBState==='fail')toast('无法连接在线卡密库（cards.json）· 请确认文件已上传','err','AUTH');
+      if(cardDBState==='fail')toast('无法连接在线卡密库（cards.json）· 请稍后再试','err','AUTH');
       else toast('激活码不在卡密库中 · 请确认卡密有效','err','AUTH');
+      return;
+    }
+    if(rec.bind&&rec.bind!==devFP()){
+      toast(`该卡密已绑定设备 ${rec.bind}，与本机设备码 ${devFP()} 不符，无法激活`,'err','AUTH');
       return;
     }
     activated.push({code:raw,actAt:Date.now(),days:rec.days});
@@ -1068,6 +1101,19 @@ safe('授权管理',()=>{
     }else renderAuth();
   },30000);
   renderAuth();
+});
+
+/* ============ 设备码显示与复制 ============ */
+safe('设备码',()=>{
+  const fp=devFP();
+  const box=$('#fpBox'); if(box)box.value=fp;
+  const fEl=$('#aFp'); if(fEl)fEl.textContent=fp;
+  const c=$('#fpCopy');
+  if(c)c.addEventListener('click',()=>{
+    copyText(fp);
+    toast('设备码已复制 · 请发给管理员领取绑定卡密','ok','AUTH');
+  });
+  $('#fpBox').addEventListener('click',function(){this.select()});
 });
 
 /* ============ 在线吊销校验（每 5 分钟核对卡密库） ============ */
@@ -1100,7 +1146,7 @@ safe('启动校验',()=>{
   },1500);
 });
 
-/* ============ 运行时完整性校验（防内存/存储篡改） ============ */
+/* ============ 运行时完整性校验 ============ */
 setInterval(()=>{
   const real=readLic();
   if(!real&&activated.length){activated=[];saveLic();renderAuth();syncTimer();applyLock();return}
@@ -1137,14 +1183,14 @@ safe('在线客服',()=>{
   updSvc(); setInterval(updSvc,60000);
   function botReply(text){
     const t=text.toLowerCase();
-    if(/激活|卡密|兑换|码|体验/.test(t))
-      return '本站<b>不在线发放激活码</b>。激活码由开发者通过管理工具签发并自动上传至本站卡密库，获得卡密后前往「授权管理」输入即可在线验证激活（多卡可叠加）。卡密获取请加入开发交流群 735 512 448 联系管理。';
+    if(/激活|卡密|兑换|码|体验|设备码/.test(t))
+      return '本站采用<b>一机一卡</b>：请到「授权管理」页复制<b>本机设备码</b>发给管理员，管理员签发绑定你设备的专属卡密后，回到该页输入即可激活（续费可叠加）。支持电脑 / 安卓 / iOS。管理员联系方式：开发交流群 735 512 448。您的设备码：<b>'+devFP()+'</b>';
     if(!inSvc())
       return '当前为非服务时间（每日 8:00-20:00），您的消息已记录，客服上线后将第一时间回复您。您也可以加入开发交流群 735 512 448 向群内管理咨询。';
     if(/到期|过期|剩余|授权|时间|叠加/.test(t))
       return authOK()
         ?`您当前叠加了 ${activated.length} 张卡密，总剩余 <b>${fmtRemain(remainOf(activated))}</b>。激活新卡密会在剩余时间上继续累加。`
-        :'当前还未激活哦，激活码请联系开发者获取，在「授权管理」输入后本站会在线验证卡密库。';
+        :'当前还未激活哦，请先在「授权管理」复制设备码发给管理员领取卡密。';
     if(/崩溃|报错|引擎|unity|闪退/.test(t))
       return '请附上 Editor 日志（保存到工程目录 Logs 下）与复现步骤，服务时间内的工程师会帮您排查；也可以先到交流群 735 512 448 发日志文件。';
     if(/人工|转接/.test(t))
